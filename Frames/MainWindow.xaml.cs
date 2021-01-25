@@ -27,7 +27,7 @@ namespace MegaMarketing2Reborn
         {
             InitializeComponent();
             Excel excel = new Excel();
-            excel.createDoc();
+            excel.CreateDoc();
             RegisterChooseScale.SelectedIndex = 0;
         }
         private void OpenTable(object sender, RoutedEventArgs e)
