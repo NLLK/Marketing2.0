@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MegaMarketing2._1
+namespace MegaMarketing2Reborn
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

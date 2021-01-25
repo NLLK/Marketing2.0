@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MegaMarketing2._1
+namespace MegaMarketing2Reborn
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
