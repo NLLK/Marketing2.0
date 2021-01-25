@@ -13,5 +13,6 @@ namespace MegaMarketing2Reborn
     /// </summary>
     public partial class App : Application
     {
+
     }
 }
