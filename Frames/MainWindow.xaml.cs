@@ -191,7 +191,7 @@ namespace MegaMarketing2Reborn
             //string json = JSONrepresent.CreateFinalJSON(JSONParts, questionnaireName);
            // string returned = PythonRepresent.CreateTable(json);
             //FromPyConsole[0] = returned.Substring(0, returned.IndexOf('\n') - 1);
-           //// int split = returned.IndexOf('\n', 0) + 1;
+           // int split = returned.IndexOf('\n', 0) + 1;
 //FromPyConsole[1] = returned.Substring(split, returned.Length - split);
         }
         private void StartConstructor(object sender, RoutedEventArgs e)
