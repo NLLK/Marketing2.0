@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace MegaMarketing2Reborn.Frames
 {
     /// <summary>
-    /// Логика взаимодействия для Ta.xaml
+    /// Логика взаимодействия для TablePresent.xaml
     /// </summary>
-    public partial class Ta : Page
+    public partial class TablePresent : Page
     {
-        public Ta()
+        public TablePresent()
         {
             InitializeComponent();
         }
