@@ -59,7 +59,7 @@
                 <ListBoxItem Content="Шкала отношений"/>
             </ComboBox>
             <Label Content="Выберите шкалу из списка:" Canvas.Left="1" Canvas.Top="130" FontSize="14"/>
-            <Button x:Name="RegisterAddScaleButton" Content="+" Canvas.Left="284" Canvas.Top="163" Width="19" Height="19" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button x:Name="RegisterAddScaleButton" Content="+" Canvas.Left="284" Canvas.Top="163" Width="19" Height="19" HorizontalAlignment="Left" VerticalAlignment="Top" Click="RegisterAddScaleButton_Click"/>
             <Label Content="Текст вопроса:" Canvas.Top="64" FontSize="14" RenderTransformOrigin="0.481,0.483"/>
             <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterAnswerText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
             <Rectangle Fill="#FFF4F4F5" Canvas.Left="6" Height="106" Stroke="Black" VerticalAlignment="Top" Width="306" Canvas.Top="197" Name="RegisterNamesRectangle" Visibility="Hidden"/>

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Newtonsoft.Json;
+using MegaMarketing2Reborn.Frames;
 
 namespace MegaMarketing2Reborn
 {
@@ -13,7 +14,7 @@ namespace MegaMarketing2Reborn
     /// </summary>
     public partial class MainWindow : Window
     {
-        System.Drawing.Point NamesAddButtonPlace;
+        Point NamesAddButtonPlace;
         int NamesLastTextBoxIndex = 2;
         Button NamesDeleteButton;
         Button NamesAddNamesButton;
@@ -29,10 +30,8 @@ namespace MegaMarketing2Reborn
         }
         private void OpenTable(object sender, RoutedEventArgs e)
         {
-            FromPyConsole[0] = "22";//для отладки
-            FromPyConsole[1] = "1.1\r\n1.2\r\n1.3\r\n";
-            TablePresent tablePresent = new TablePresent(FromPyConsole);
-            ConstructorFrame.Navigate(tablePresent);
+            //TablePresent tablePresent = new TablePresent(FromPyConsole);
+            //ConstructorFrame.Navigate(tablePresent);
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -45,8 +44,8 @@ namespace MegaMarketing2Reborn
                         Canvas.SetTop(RegisterName1, 192);
                         RegisterCanvas.Children.Add(RegisterName1);
 
-                        MegaMarketing.PlaceHolderTextBox p = new MegaMarketing.PlaceHolderTextBox { Text = "Наименование 1 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
-                        MegaMarketing.PlaceHolderTextBox p2 = new MegaMarketing.PlaceHolderTextBox { Text = "Наименование 2 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
+                        TextBox p = new TextBox { Style = (Style)FindResource("placeHolder"),  Tag = "Наименование 1 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
+                        TextBox p2 = new TextBox { Style = (Style)FindResource("placeHolder"), Tag = "Наименование 2 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
                         Canvas.SetLeft(p, 10); Canvas.SetTop(p, 225);
                         Canvas.SetLeft(p2, 10); Canvas.SetTop(p2, 250);
                         if (NamesTextBoxesList.Count != 0) NamesTextBoxesList.Clear();
@@ -57,7 +56,7 @@ namespace MegaMarketing2Reborn
                         NamesAddNamesButton.Click += RegisterAddNames_Click;
                         Canvas.SetLeft(NamesAddNamesButton, 10);
                         Canvas.SetTop(NamesAddNamesButton, 275);
-                        NamesAddButtonPlace = new System.Drawing.Point(10, 275);
+                        NamesAddButtonPlace = new Point(10, 275);
                         RegisterCanvas.Children.Add(NamesAddNamesButton);
                         RegisterNamesRectangle.Height = 106;
                         RegisterNamesRectangle.Visibility = Visibility.Visible;
@@ -86,9 +85,9 @@ namespace MegaMarketing2Reborn
 
         private void NamesDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            int x = NamesAddButtonPlace.X;
-            int y = NamesAddButtonPlace.Y - 25;
-            NamesAddButtonPlace = new System.Drawing.Point(x, y);
+            int x = (int)NamesAddButtonPlace.X;
+            int y = (int)NamesAddButtonPlace.Y - 25;
+            NamesAddButtonPlace = new Point(x, y);
 
             RegisterCanvas.Children.Remove(NamesAddNamesButton);
             Canvas.SetLeft(NamesAddNamesButton, x);
@@ -112,7 +111,7 @@ namespace MegaMarketing2Reborn
             NamesLastTextBoxIndex++;
             //TODO: имена задать
 
-            MegaMarketing.PlaceHolderTextBox p = new MegaMarketing.PlaceHolderTextBox { Text = "Наименование " + (NamesLastTextBoxIndex + 1).ToString(), Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
+            TextBox p = new TextBox{ Style = (Style)FindResource("placeHolder"), Tag = "Наименование " + (NamesLastTextBoxIndex + 1).ToString(), Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
             Canvas.SetLeft(p, NamesAddButtonPlace.X); Canvas.SetTop(p, NamesAddButtonPlace.Y);
             RegisterCanvas.Children.Add(p);
             NamesTextBoxesList.Add(p);
@@ -121,10 +120,10 @@ namespace MegaMarketing2Reborn
 
             NamesAddNamesButton = new Button { Content = "Добавить наименование", Name = "RegisterAddNames" };
             NamesAddNamesButton.Click += RegisterAddNames_Click;//TODO: переместить
-            int x = NamesAddButtonPlace.X;
-            int y = NamesAddButtonPlace.Y + 25;
+            int x = (int)NamesAddButtonPlace.X;
+            int y = (int)NamesAddButtonPlace.Y + 25;
             Canvas.SetLeft(NamesAddNamesButton, x); Canvas.SetTop(NamesAddNamesButton, y);
-            NamesAddButtonPlace = new System.Drawing.Point(x, y);
+            NamesAddButtonPlace = new Point(x, y);
             RegisterCanvas.Children.Add(NamesAddNamesButton);
 
             RegisterNamesRectangle.Height += 25;
@@ -180,28 +179,27 @@ namespace MegaMarketing2Reborn
                 RegisterName1.Content = "";
             }
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
-            NamesAddButtonPlace = new System.Drawing.Point(10, 275);
+            NamesAddButtonPlace = new Point(10, 275);
 
-            string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
-            JSONParts.Add(str);
+            //string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
+            //JSONParts.Add(str);
 
         }
 
         private void CreateTable(object sender, RoutedEventArgs e)
         {
-            string json = JSONrepresent.CreateFinalJSON(JSONParts, questionnaireName);
-            string returned = PythonRepresent.CreateTable(json);
-            FromPyConsole[0] = returned.Substring(0, returned.IndexOf('\n') - 1);
-            int split = returned.IndexOf('\n', 0) + 1;
-            FromPyConsole[1] = returned.Substring(split, returned.Length - split);
+            //string json = JSONrepresent.CreateFinalJSON(JSONParts, questionnaireName);
+           // string returned = PythonRepresent.CreateTable(json);
+            //FromPyConsole[0] = returned.Substring(0, returned.IndexOf('\n') - 1);
+           //// int split = returned.IndexOf('\n', 0) + 1;
+//FromPyConsole[1] = returned.Substring(split, returned.Length - split);
         }
         private void StartConstructor(object sender, RoutedEventArgs e)
         {
-            InputName inputName = new InputName();
-            inputName.ShowDialog();
-            questionnaireName = inputName.Name;
-            questionnaireNameLabel.Content = "Имя анкеты: " + questionnaireName;
+           // InputName inputName = new InputName();
+           // inputName.ShowDialog();
+//questionnaireName = inputName.Name;
+           // questionnaireNameLabel.Content = "Имя анкеты: " + questionnaireName;
         }
     }
-}
 }
