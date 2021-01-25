@@ -16,7 +16,7 @@ namespace MegaMarketing2Reborn
 		{
 			InitializeComponent();
 			Excel excel = new Excel();
-			excel.createDoc();
+			excel.CreateDoc();
 		}
 	}
 }

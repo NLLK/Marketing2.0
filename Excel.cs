@@ -16,16 +16,17 @@ namespace MegaMarketing2Reborn
 		private _Excel.Range workSheet_range = null;
 		public void CreateExcelDoc()
 		{
-			createDoc();
+			CreateDoc();
 		}
-		public void createDoc()
+		public void CreateDoc()
 		{
 			try
 			{
 				app = new _Excel.Application();
-				app.Visible = true;
+				app.Visible = false;
 				workbook = app.Workbooks.Add(1);
 				worksheet = (_Excel.Worksheet)workbook.Sheets[1];
+				workbook.SaveAs("excel.xlsx");
 			}
 			catch (Exception e)
 			{
