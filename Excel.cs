@@ -27,6 +27,7 @@ namespace MegaMarketing2Reborn
 				workbook = app.Workbooks.Add(1);
 				worksheet = (_Excel.Worksheet)workbook.Sheets[1];
 				workbook.SaveAs("excel.xlsx");
+				app.Quit();
 			}
 			catch (Exception e)
 			{
