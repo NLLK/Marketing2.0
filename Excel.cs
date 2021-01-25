@@ -29,7 +29,7 @@ namespace MegaMarketing2Reborn
 			}
 			catch (Exception e)
 			{
-				Console.Write("Error");
+                Console.Write(e.ToString());
 			}
 			finally
 			{
