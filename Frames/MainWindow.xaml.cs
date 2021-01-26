@@ -198,7 +198,7 @@ namespace MegaMarketing2Reborn
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
             NamesAddButtonPlace = new Point(10, 275);
 
-
+            excel.AddRegister(ls);
             //string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
             //JSONParts.Add(str);
 

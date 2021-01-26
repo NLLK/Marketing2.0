@@ -10,10 +10,14 @@ namespace MegaMarketing2Reborn
 {
     class Excel
     {
+        //Excel
 		private _Excel.Application app = null;
 		private _Excel.Workbook workbook = null;
 		private _Excel.Worksheet worksheet = null;
 		private _Excel.Range workSheet_range = null;
+        //UI to Excel
+        private int lastRegisterIndex = 0;
+        private int lastRegisterPlace = 1;
 
 		public void CreateExcelDoc()
 		{
@@ -49,5 +53,21 @@ namespace MegaMarketing2Reborn
 			workbook.Close();
 			app.Quit();
 		}
+
+        public void AddRegister(List<string> inputList)
+        {
+            int start = lastRegisterPlace;
+            for (int i = 0; i < inputList.Count; i++)
+            {
+                if (i == 0)
+                {
+                    Write(1, start + i, $"{lastRegisterIndex + 1}({inputList[i]})");
+                }
+                else
+                {
+                    Write(1, start + i, $"{lastRegisterIndex + 1}.{i}({inputList[i]})");
+                }
+            }
+        }
 	}
 }
