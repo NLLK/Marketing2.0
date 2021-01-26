@@ -28,6 +28,8 @@ namespace MegaMarketing2Reborn
             InitializeComponent();
             Excel excel = new Excel();
             excel.CreateDoc();
+			excel.Write(1, 1, "blabla");
+			excel.Close();
             RegisterChooseScale.SelectedIndex = 0;
         }
         private void OpenTable(object sender, RoutedEventArgs e)

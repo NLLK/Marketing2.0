@@ -14,10 +14,12 @@ namespace MegaMarketing2Reborn
 		private _Excel.Workbook workbook = null;
 		private _Excel.Worksheet worksheet = null;
 		private _Excel.Range workSheet_range = null;
+
 		public void CreateExcelDoc()
 		{
 			CreateDoc();
 		}
+
 		public void CreateDoc()
 		{
 			try
@@ -26,8 +28,6 @@ namespace MegaMarketing2Reborn
 				app.Visible = false;
 				workbook = app.Workbooks.Add(1);
 				worksheet = (_Excel.Worksheet)workbook.Sheets[1];
-				workbook.SaveAs("excel.xlsx");
-				app.Quit();
 			}
 			catch (Exception e)
 			{
@@ -36,6 +36,18 @@ namespace MegaMarketing2Reborn
 			finally
 			{
 			}
+		}
+
+		public void Write(int i, int j, string text)
+		{
+			worksheet.Cells[i, j].Value = text;
+		}
+
+		public void Close()
+		{
+			workbook.SaveAs("excel.xlsx");
+			workbook.Close();
+			app.Quit();
 		}
 	}
 }
