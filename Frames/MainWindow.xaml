@@ -63,7 +63,7 @@
             <Label Content="Текст вопроса:" Canvas.Top="64" FontSize="14" RenderTransformOrigin="0.481,0.483"/>
             <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterAnswerText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
             <Rectangle Fill="#FFF4F4F5" Canvas.Left="6" Height="106" Stroke="Black" VerticalAlignment="Top" Width="306" Canvas.Top="197" Name="RegisterNamesRectangle" Visibility="Hidden"/>
-            <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterAddRegister_Click"/>
         </Canvas>
     </Grid>
 </Window>
