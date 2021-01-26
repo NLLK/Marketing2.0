@@ -29,10 +29,9 @@ namespace MegaMarketing2Reborn
             InitializeComponent();
             excel = new Excel();
             excel.CreateDoc();
-			excel.Write(1, 1, "blabla");
-			excel.Close();
             RegisterChooseScale.SelectedIndex = 0;
         }
+        
         private void OpenTable(object sender, RoutedEventArgs e)
         {
             //TablePresent tablePresent = new TablePresent(FromPyConsole);
@@ -218,6 +217,11 @@ namespace MegaMarketing2Reborn
             // inputName.ShowDialog();
             //questionnaireName = inputName.Name;
             // questionnaireNameLabel.Content = "Имя анкеты: " + questionnaireName;
+        }
+
+        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            excel.Close();
         }
     }
 }

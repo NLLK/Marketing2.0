@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MegaMarketing2Reborn"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280"
+        Title="MainWindow" Height="720" Width="1280" Closing="OnClosing"
         >
     <Grid>
-        <Frame HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="ConstructorFrame" NavigationUIVisibility="Hidden" Panel.ZIndex="5" Height="664" Width="1283" Margin="2,26,-13,-1" />
+        <Frame HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="ConstructorFrame" NavigationUIVisibility="Hidden" Panel.ZIndex="5" Height="664" Width="1283" Margin="10,25,-21,0" />
         <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="8" d:IsLocked="True" Grid.RowSpan="2">
             <MenuItem Header="Конструктор">
                 <MenuItem Header="Запустить конструктор (ввести имя)"/>
