@@ -87,11 +87,6 @@ namespace MegaMarketing2Reborn
 			return dv;
 		}
 
-		public void Save()
-		{
-			workbook.SaveAs("excel.xlsx");
-		}
-
 		public void Close()
 		{
 			workbook.Close();
@@ -104,17 +99,7 @@ namespace MegaMarketing2Reborn
         {
             worksheet.Cells[i, j].Formula = text;
         }
-
-        public void Close()
-        {
-            Save();
-            workbook.Close();
-            app.Quit();
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
-        }
-
+        
         public void Save()
         {
             workbook.SaveAs(excelFilePath, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);

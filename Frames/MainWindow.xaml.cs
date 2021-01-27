@@ -26,6 +26,9 @@ namespace MegaMarketing2Reborn
         private Excel excel;
         public MainWindow()
         {
+            excel = new Excel();
+            excel.CreateDoc();
+
             InitializeComponent();
             RegisterChooseScale.SelectedIndex = 0;
             RegisterCanvas.Visibility = Visibility.Hidden;
@@ -33,8 +36,8 @@ namespace MegaMarketing2Reborn
 
         private void OpenTable(object sender, RoutedEventArgs e)
         {
-            //TablePresent tablePresent = new TablePresent(FromPyConsole);
-            //ConstructorFrame.Navigate(tablePresent);
+            TablePresent table2 = new TablePresent();
+            this.Content = table2;
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -175,9 +178,6 @@ namespace MegaMarketing2Reborn
             if (!RegisterShowed) return;
 
             //добавление данных в список
-            List<string> ls = new List<string>();
-			excel = new Excel();
-			excel.CreateDoc();
 
 			List<string> ls = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
@@ -233,15 +233,10 @@ namespace MegaMarketing2Reborn
 
             //отправка в excel
             excel.AddRegister(ls);
-            excel.Save();
-			excel.Close();
-		}
 
-		private void OpenWindow_Click(object sender, RoutedEventArgs e)
-		{
-			TablePresent table2 = new TablePresent();
-			this.Content = table2;
-		}
+        }
+
+
 
 
         private void AddRegisterButton_Click(object sender, RoutedEventArgs e)
@@ -253,7 +248,7 @@ namespace MegaMarketing2Reborn
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //excel.Close();
+            excel.Close();
         }
     }
 }

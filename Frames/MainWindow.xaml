@@ -14,7 +14,7 @@
                 <MenuItem Header="Запустить конструктор (ввести имя)"/>
                 <MenuItem Header="Создать таблицу"/>
             </MenuItem>
-            <MenuItem Header="Таблица"/>
+            <MenuItem Header="Таблица" Click="OpenTable"/>
         </Menu>
         <ScrollViewer Margin="2,25,310,0" Width="960">
             <StackPanel>
@@ -65,7 +65,6 @@
             <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterAnswerText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
             <Rectangle Fill="#FFF4F4F5" Canvas.Left="6" Height="106" Stroke="Black" VerticalAlignment="Top" Width="306" Canvas.Top="197" Name="RegisterNamesRectangle" Visibility="Hidden"/>
             <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterAddRegister_Click"/>
-            <Button x:Name="OpenWindow" Content="Открыть окно" Canvas.Left="206" Canvas.Top="600"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="OpenWindow_Click"/>
         </Canvas>
     </Grid>
 </Window>
