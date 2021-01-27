@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,5 +25,14 @@ namespace MegaMarketing2Reborn.Frames
         {
             InitializeComponent();
         }
-    }
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			Excel excel = new Excel();
+			excel.OpenDoc();
+			DataView dv = excel.Read();
+			dataGrid.ItemsSource = dv;
+			excel.Close();
+		}
+	}
 }

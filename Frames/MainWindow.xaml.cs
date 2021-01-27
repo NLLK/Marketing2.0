@@ -27,8 +27,6 @@ namespace MegaMarketing2Reborn
         public MainWindow()
         {
             InitializeComponent();
-            excel = new Excel();
-            excel.CreateDoc();
             RegisterChooseScale.SelectedIndex = 0;
         }
         
@@ -150,7 +148,10 @@ namespace MegaMarketing2Reborn
 
         private void RegisterAddRegister_Click(object sender, RoutedEventArgs e)
         {
-            List<string> ls = new List<string>();
+			excel = new Excel();
+			excel.CreateDoc();
+
+			List<string> ls = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
@@ -198,12 +199,19 @@ namespace MegaMarketing2Reborn
             NamesAddButtonPlace = new Point(10, 275);
 
             excel.AddRegister(ls);
-            //string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
-            //JSONParts.Add(str);
+			//string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
+			//JSONParts.Add(str);
+			excel.Save();
+			excel.Close();
+		}
 
-        }
+		private void OpenWindow_Click(object sender, RoutedEventArgs e)
+		{
+			TablePresent table2 = new TablePresent();
+			this.Content = table2;
+		}
 
-        private void CreateTable(object sender, RoutedEventArgs e)
+		private void CreateTable(object sender, RoutedEventArgs e)
         {
             //string json = JSONrepresent.CreateFinalJSON(JSONParts, questionnaireName);
             // string returned = PythonRepresent.CreateTable(json);
@@ -221,7 +229,7 @@ namespace MegaMarketing2Reborn
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            excel.Close();
+            //excel.Close();
         }
     }
 }
