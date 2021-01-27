@@ -18,11 +18,11 @@ namespace MegaMarketing2Reborn
         int NamesLastTextBoxIndex = 2;
         Button NamesDeleteButton;
         Button NamesAddNamesButton;
-        List<UIElement> NamesTextBoxesList = new List<UIElement>();
-        List<string> JSONParts = new List<string>();
+        private List<UIElement> NamesTextBoxesList = new List<UIElement>();
         private Label RegisterName1;
+        private bool RegisterShowed = false;
         string questionnaireName;
-        public string[] FromPyConsole = new string[2];
+
         private Excel excel;
         public MainWindow()
         {
@@ -30,8 +30,9 @@ namespace MegaMarketing2Reborn
             excel = new Excel();
             excel.CreateDoc();
             RegisterChooseScale.SelectedIndex = 0;
+            RegisterCanvas.Visibility = Visibility.Hidden;
         }
-        
+
         private void OpenTable(object sender, RoutedEventArgs e)
         {
             //TablePresent tablePresent = new TablePresent(FromPyConsole);
@@ -39,51 +40,73 @@ namespace MegaMarketing2Reborn
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
         {
-            switch (RegisterChooseScale.SelectedIndex)
+            if (RegisterShowed == false)
             {
-                case 0:
-                    {
-                        RegisterName1 = new Label { Content = "Наименования:", FontSize = 14 };
-                        Canvas.SetLeft(RegisterName1, 8);
-                        Canvas.SetTop(RegisterName1, 192);
-                        RegisterCanvas.Children.Add(RegisterName1);
+                RegisterShowed = true;
+                switch (RegisterChooseScale.SelectedIndex)
+                {
+                    case 0:
+                        {
+                            RegisterName1 = new Label { Content = "Наименования:", FontSize = 14 };
+                            Canvas.SetLeft(RegisterName1, 8);
+                            Canvas.SetTop(RegisterName1, 192);
+                            RegisterCanvas.Children.Add(RegisterName1);
 
-                        TextBox p = new TextBox { Style = (Style)FindResource("placeHolder"), Tag = "Наименование 1 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
-                        TextBox p2 = new TextBox { Style = (Style)FindResource("placeHolder"), Tag = "Наименование 2 ", Width = 247, Height = 20, Foreground = System.Windows.Media.Brushes.Gray };
-                        Canvas.SetLeft(p, 10); Canvas.SetTop(p, 225);
-                        Canvas.SetLeft(p2, 10); Canvas.SetTop(p2, 250);
-                        if (NamesTextBoxesList.Count != 0) NamesTextBoxesList.Clear();
-                        RegisterCanvas.Children.Add(p); RegisterCanvas.Children.Add(p2);
-                        NamesTextBoxesList.Add(p); NamesTextBoxesList.Add(p2);
-                        NamesLastTextBoxIndex = 1;
-                        NamesAddNamesButton = new Button { Content = "Добавить наименование", Name = "RegisterAddNames" };
-                        NamesAddNamesButton.Click += RegisterAddNames_Click;
-                        Canvas.SetLeft(NamesAddNamesButton, 10);
-                        Canvas.SetTop(NamesAddNamesButton, 275);
-                        NamesAddButtonPlace = new Point(10, 275);
-                        RegisterCanvas.Children.Add(NamesAddNamesButton);
-                        RegisterNamesRectangle.Height = 106;
-                        RegisterNamesRectangle.Visibility = Visibility.Visible;
+                            TextBox p = new TextBox
+                            {
+                                Style = (Style)FindResource("placeHolder"),
+                                Tag = "Наименование 1 ",
+                                Width = 247,
+                                Height = 20,
+                                Foreground = System.Windows.Media.Brushes.Gray
+                            };
+                            TextBox p2 = new TextBox
+                            {
+                                Style = (Style)FindResource("placeHolder"),
+                                Tag = "Наименование 2 ",
+                                Width = 247,
+                                Height = 20,
+                                Foreground = System.Windows.Media.Brushes.Gray
+                            };
+                            Canvas.SetLeft(p, 10);
+                            Canvas.SetTop(p, 225);
+                            Canvas.SetLeft(p2, 10);
+                            Canvas.SetTop(p2, 250);
+                            if (NamesTextBoxesList.Count != 0) NamesTextBoxesList.Clear();
+                            RegisterCanvas.Children.Add(p);
+                            RegisterCanvas.Children.Add(p2);
+                            NamesTextBoxesList.Add(p);
+                            NamesTextBoxesList.Add(p2);
+                            NamesLastTextBoxIndex = 1;
+                            NamesAddNamesButton = new Button { Content = "Добавить наименование", Name = "RegisterAddNames" };
+                            NamesAddNamesButton.Click += RegisterAddNames_Click;
+                            Canvas.SetLeft(NamesAddNamesButton, 10);
+                            Canvas.SetTop(NamesAddNamesButton, 275);
+                            NamesAddButtonPlace = new Point(10, 275);
+                            RegisterCanvas.Children.Add(NamesAddNamesButton);
+                            RegisterNamesRectangle.Height = 106;
+                            RegisterNamesRectangle.Visibility = Visibility.Visible;
 
+                            break;
+                        }
+                    case 1:
+                        {
+
+                            break;
+                        }
+                    case 2:
+                        {
+
+                            break;
+                        }
+                    case 3:
+                        {
+
+                            break;
+                        }
+                    case -1:
                         break;
-                    }
-                case 1:
-                    {
-
-                        break;
-                    }
-                case 2:
-                    {
-
-                        break;
-                    }
-                case 3:
-                    {
-
-                        break;
-                    }
-                case -1:
-                    break;
+                }
             }
         }
 
@@ -150,23 +173,32 @@ namespace MegaMarketing2Reborn
 
         private void RegisterAddRegister_Click(object sender, RoutedEventArgs e)
         {
+            //если не показано меню для заполнения регистров
+            if (!RegisterShowed) return;
+
+            //добавление данных в список
             List<string> ls = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
                 {
                     TextBox tx = (TextBox)el;
-                    if (tx.Name == "RegisterAnswerText" && tx.Text == "Текст вопроса (не обязательно)") tx.Text = "Без текста";
                     ls.Add(tx.Text);
                 }
             }
+
+            //очистка интерфейса
+            RegisterShowed = false;
+
+            RegisterCanvas.Visibility = Visibility.Hidden;
+
             for (int i = 0; i < RegisterCanvas.Children.Count; i++)
             {
                 UIElement el = RegisterCanvas.Children[i];
-                if (el.GetType().Name == "PlaceHolderTextBox")
+                if (el.GetType().Name == "TextBox")
                 {
                     TextBox tx = (TextBox)el;
-                    if (tx.Name == "RegisterAnswerText") continue;
+                    if (tx.Name == "RegisterAnswerText") { tx.Text = ""; continue;}
                     else
                     {
                         RegisterCanvas.Children.Remove(el);
@@ -197,6 +229,7 @@ namespace MegaMarketing2Reborn
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
             NamesAddButtonPlace = new Point(10, 275);
 
+            //отправка в excel
             excel.AddRegister(ls);
             //string str = JSONrepresent.CreateJSONPart(ls, JSONParts.Count);
             //JSONParts.Add(str);
@@ -219,9 +252,16 @@ namespace MegaMarketing2Reborn
             // questionnaireNameLabel.Content = "Имя анкеты: " + questionnaireName;
         }
 
+        
+
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             excel.Close();
+        }
+
+        private void AddRegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterCanvas.Visibility = Visibility.Visible;
         }
     }
 }
