@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Configuration;
 using System.Windows;
+using WinForms = System.Windows.Forms;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using Newtonsoft.Json;
 using MegaMarketing2Reborn.Frames;
+using MegaMarketing2Reborn.SettingsSetup;
 
 namespace MegaMarketing2Reborn
 {
@@ -43,11 +43,14 @@ namespace MegaMarketing2Reborn
         {
             if (RegisterShowed == false)
             {
-                RegisterShowed = true;
+
                 switch (RegisterChooseScale.SelectedIndex)
                 {
                     case 0:
                         {
+                            //обязательно для работающих частей
+                            RegisterShowed = true;
+
                             RegisterName1 = new Label { Content = "Наименования:", FontSize = 14 };
                             Canvas.SetLeft(RegisterName1, 8);
                             Canvas.SetTop(RegisterName1, 192);
@@ -179,7 +182,7 @@ namespace MegaMarketing2Reborn
 
             //добавление данных в список
 
-			List<string> ls = new List<string>();
+            List<string> ls = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
@@ -193,14 +196,22 @@ namespace MegaMarketing2Reborn
             RegisterShowed = false;
 
             RegisterCanvas.Visibility = Visibility.Hidden;
+            DeleteRegisterRectangle();
 
+            //отправка в excel
+            excel.AddRegister(ls);
+
+        }
+
+        private void DeleteRegisterRectangle()
+        {
             for (int i = 0; i < RegisterCanvas.Children.Count; i++)
             {
                 UIElement el = RegisterCanvas.Children[i];
                 if (el.GetType().Name == "TextBox")
                 {
                     TextBox tx = (TextBox)el;
-                    if (tx.Name == "RegisterAnswerText") { tx.Text = ""; continue;}
+                    if (tx.Name == "RegisterAnswerText") { tx.Text = ""; continue; }
                     else
                     {
                         RegisterCanvas.Children.Remove(el);
@@ -230,14 +241,7 @@ namespace MegaMarketing2Reborn
             }
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
             NamesAddButtonPlace = new Point(10, 275);
-
-            //отправка в excel
-            excel.AddRegister(ls);
-
         }
-
-
-
 
         private void AddRegisterButton_Click(object sender, RoutedEventArgs e)
         {
@@ -246,9 +250,37 @@ namespace MegaMarketing2Reborn
             //mainGrid
         }
 
+
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             excel.Close();
+        }
+
+        private void RegisterChooseScale_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DeleteRegisterRectangle();
+        }
+
+        private void ChooseExcelLocationButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            //TODO: работает сохранение настроек в районах одного запуска
+
+
+            WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
+            FBD.ShowNewFolderButton = true;
+            FBD.Description = "Выберите путь файла Excel...";
+
+            Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            StartupFoldersConfigSection section = (StartupFoldersConfigSection)cfg.Sections["StartupFolders"];
+
+            if (section.FolderItems[0].Path != "") FBD.SelectedPath = section.FolderItems[0].Path;
+
+            if (FBD.ShowDialog() == WinForms.DialogResult.OK)
+            {
+                section.FolderItems[0].Path = FBD.SelectedPath;
+                cfg.Save();
+                excel.SetExcelFilePath(FBD.SelectedPath);
+            }
         }
     }
 }

@@ -18,7 +18,8 @@ namespace MegaMarketing2Reborn
         private _Excel.Worksheet worksheet = null;
         private _Excel.Range workSheet_range = null;
 
-        private string excelFilePath = "excel.xlsx";
+        private string excelFileName = "excel.xlsx";
+        private string excelFilePath = "C:\\";
         //UI to Excel
         private int lastRegisterIndex = 0;
         private int lastRegisterPlace = 1;
@@ -51,7 +52,7 @@ namespace MegaMarketing2Reborn
 		{
 			app = new _Excel.Application();
 			app.Visible = false;
-			workbook = app.Workbooks.Open("excel.xlsx");
+			workbook = app.Workbooks.Open(excelFilePath + excelFileName);
 		}
 
 		public void Write(int i, int j, string text)
@@ -102,7 +103,7 @@ namespace MegaMarketing2Reborn
         
         public void Save()
         {
-            workbook.SaveAs(excelFilePath, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            workbook.SaveAs(excelFilePath + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
         }
 
         public void AddRegister(List<string> inputList)
@@ -133,6 +134,11 @@ namespace MegaMarketing2Reborn
             lastRegisterIndex++;
             lastRegisterPlace = (start + i);
             Save();
+        }
+
+        public void SetExcelFilePath(string path)
+        {
+            excelFilePath = path;
         }
     }
 }
