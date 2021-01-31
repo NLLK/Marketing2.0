@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Windows.Controls;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace MegaMarketing2Reborn
 {
@@ -18,9 +20,9 @@ namespace MegaMarketing2Reborn
         private _Excel.Worksheet worksheet = null;
         private _Excel.Range workSheet_range = null;
 
-        private string excelFilePath = "excel.xlsx";
-        //UI to Excel
-        private int lastRegisterIndex = 0;
+        private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
+		//UI to Excel
+		private int lastRegisterIndex = 0;
         private int lastRegisterPlace = 1;
 
         public void CreateExcelDoc()
@@ -51,12 +53,36 @@ namespace MegaMarketing2Reborn
 		{
 			app = new _Excel.Application();
 			app.Visible = false;
-			workbook = app.Workbooks.Open("excel.xlsx");
+			workbook = app.Workbooks.Open(excelFilePath);
 		}
 
 		public void Write(int i, int j, string text)
 		{
 			worksheet.Cells[i, j].Value = text;
+		}
+
+		public void Write(DataGrid dataGrid)
+		{
+			worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+			for (int j = 0; j < dataGrid.Columns.Count; j++)
+			{
+				Range myRange = (Range)worksheet.Cells[1, j + 1];
+				worksheet.Cells[1, j + 1].Font.Bold = true;
+				worksheet.Columns[j + 1].ColumnWidth = 15;
+				myRange.Value2 = dataGrid.Columns[j].Header;
+			}
+
+			for (int i = 0; i < dataGrid.Columns.Count; i++)
+			{
+				for (int j = 0; j < dataGrid.Items.Count; j++)
+				{
+					TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
+					_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
+					myRange.Value2 = b.Text;
+				}
+			}
+
+			workbook.Save();
 		}
 
 		public System.Data.DataView Read()

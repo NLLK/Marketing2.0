@@ -26,12 +26,20 @@ namespace MegaMarketing2Reborn.Frames
             InitializeComponent();
         }
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void ButtonLoad_Click(object sender, RoutedEventArgs e)
 		{
 			Excel excel = new Excel();
 			excel.OpenDoc();
 			DataView dv = excel.Read();
 			dataGrid.ItemsSource = dv;
+			excel.Close();
+		}
+
+		private void ButtonChange_Click(object sender, RoutedEventArgs e)
+		{
+			Excel excel = new Excel();
+			excel.OpenDoc();
+			excel.Write(dataGrid);
 			excel.Close();
 		}
 	}
