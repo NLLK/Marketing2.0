@@ -21,6 +21,7 @@ namespace MegaMarketing2Reborn.Frames
     /// </summary>
     public partial class TablePresent : Page
     {
+        private Excel excel;
         public TablePresent()
         {
             InitializeComponent();
@@ -31,7 +32,8 @@ namespace MegaMarketing2Reborn.Frames
 			Excel excel = new Excel();
 			excel.OpenDoc();
 			DataView dv = excel.Read();
-			dataGrid.ItemsSource = dv;
+            //TODO: залупа
+            dataGrid.ItemsSource = dv;
 			excel.Close();
 		}
 

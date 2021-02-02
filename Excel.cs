@@ -61,57 +61,68 @@ namespace MegaMarketing2Reborn
 			worksheet.Cells[i, j].Value = text;
 		}
 
-		public void Write(DataGrid dataGrid)
+        public void Write(DataGrid dataGrid)
+        {
+            worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+            for (int j = 0; j < dataGrid.Columns.Count; j++)
+            {
+                //Range myRange = (Range)worksheet.Cells[1, j + 1];
+                worksheet.Cells[1, j + 1].Font.Bold = true;
+                worksheet.Columns[j + 1].ColumnWidth = 15;
+                //myRange.Value2 = dataGrid.Columns[j].Header;
+                worksheet.Cells[1, j + 1].Value2 = dataGrid.Columns[j].Header;
+            }
+
+            for (int i = 0; i < dataGrid.Columns.Count; i++)
+            {
+                for (int j = 0; j < dataGrid.Items.Count; j++)
+                {
+                    //TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
+                    //_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
+                    //myRange.Value2 = b.Text;
+                    worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+                }
+            }
+
+            workbook.Save();
+        }
+
+        public System.Data.DataView Read()
 		{
-			worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
-			for (int j = 0; j < dataGrid.Columns.Count; j++)
-			{
-				Range myRange = (Range)worksheet.Cells[1, j + 1];
-				worksheet.Cells[1, j + 1].Font.Bold = true;
-				worksheet.Columns[j + 1].ColumnWidth = 15;
-				myRange.Value2 = dataGrid.Columns[j].Header;
-			}
-
-			for (int i = 0; i < dataGrid.Columns.Count; i++)
-			{
-				for (int j = 0; j < dataGrid.Items.Count; j++)
-				{
-					TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
-					_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
-					myRange.Value2 = b.Text;
-				}
-			}
-
-			workbook.Save();
-		}
-
-		public System.Data.DataView Read()
-		{
-			worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+            worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
 			workSheet_range = worksheet.UsedRange;
 			System.Data.DataTable dt = new System.Data.DataTable();
-			for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
-			{
-				dt.Columns.Add(
-				new DataColumn((workSheet_range.Cells[1, Cnum] as _Excel.Range).Value2.ToString()));
+            for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
+            {
+                string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
+
+                dt.Columns.Add(
+				new DataColumn{ ColumnName = columnName, DataType = typeof(string)});
 			}
-			for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
-			{
-				DataRow dr = dt.NewRow();
-				for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
-				{
-					if ((workSheet_range.Cells[Rnum, Cnum] as _Excel.Range).Value2 != null)
-					{
-						dr[Cnum - 1] =
-						(workSheet_range.Cells[Rnum, Cnum] as _Excel.Range).Value2.ToString();
-					}
-				}
-				dt.Rows.Add(dr);
-				dt.AcceptChanges();
-			}
-			DataView dv = new DataView(dt);
-			return dv;
-		}
+            for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
+            {
+                DataRow dr = dt.NewRow();
+                for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
+                {
+                    string cell = "";
+                    try
+                    {
+                        cell = (workSheet_range.Cells[Rnum, Cnum] as Range).get_Value().ToString();
+                    }
+                    catch
+                    {
+
+                    }
+                    finally
+                    {
+                        dr[Cnum - 1] = cell;
+                    }
+                }
+                dt.Rows.Add(dr);
+            }
+            dt.AcceptChanges();
+            return new DataView(dt);
+        }
 
 		public void Close()
 		{
@@ -148,10 +159,10 @@ namespace MegaMarketing2Reborn
                 }
                 else
                 {
-                    if (inputList[i].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}.{i}");
+                    if (inputList[i].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
                     else
                     {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}.{i}({inputList[i]})");
+                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
                     }
                 }
             }

@@ -233,7 +233,6 @@ namespace MegaMarketing2Reborn
 
             //отправка в excel
             excel.AddRegister(ls);
-			excel.Close();
         }
 
 
