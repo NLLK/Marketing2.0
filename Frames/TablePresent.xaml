@@ -10,15 +10,20 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <DataGrid Name="dataGrid" MinColumnWidth="100" Margin="0,0,5,0">
-        </DataGrid>
+        <DataGrid Name="dataGrid" MinColumnWidth="100"/>
+
         <Button Grid.Column="1" VerticalAlignment="Top"
-            Padding="10,5" Click="Button_Click">
+            Padding="10,5" Click="ButtonLoad_Click" Height="28">
             <TextBlock TextAlignment="Center" TextWrapping="Wrap"
                    Text="Загрузить таблицу"/>
+        </Button>
+        <Button Grid.Column="1" VerticalAlignment="Top"
+            Padding="10,5" Click="ButtonChange_Click" Margin="0,50,0,0" Height="28">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap"
+                   Text="Изменить таблицу"/>
         </Button>
     </Grid>
 </Page>
