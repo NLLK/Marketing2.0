@@ -264,8 +264,7 @@ namespace MegaMarketing2Reborn
         private void ChooseExcelLocationButton_OnClick(object sender, RoutedEventArgs e)
         {
             //TODO: работает сохранение настроек в районах одного запуска
-
-
+            
             WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
             FBD.ShowNewFolderButton = true;
             FBD.Description = "Выберите путь файла Excel...";
