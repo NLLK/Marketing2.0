@@ -205,6 +205,7 @@ namespace MegaMarketing2Reborn
 
         private void DeleteRegisterRectangle()
         {
+            RegisterShowed = false;
             for (int i = 0; i < RegisterCanvas.Children.Count; i++)
             {
                 UIElement el = RegisterCanvas.Children[i];
