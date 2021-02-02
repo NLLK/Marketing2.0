@@ -21,12 +21,9 @@ namespace MegaMarketing2Reborn
         private _Excel.Range workSheet_range = null;
 
         private string excelFileName = "excel.xlsx";
-        private string excelFilePath = "C:\\";
         //UI to Excel
         private int lastRegisterIndex = 0;
         private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
-		//UI to Excel
-		private int lastRegisterIndex = 0;
         private int lastRegisterPlace = 1;
 
         public void CreateExcelDoc()
@@ -57,8 +54,10 @@ namespace MegaMarketing2Reborn
 		{
 			app = new _Excel.Application();
 			app.Visible = false;
-			workbook = app.Workbooks.Open(excelFilePath + excelFileName);
-		}
+			//workbook = app.Workbooks.Open(excelFilePath + excelFileName);
+            workbook = app.Workbooks.Open(excelFilePath);
+
+        }
 
 		public void Write(int i, int j, string text)
 		{
