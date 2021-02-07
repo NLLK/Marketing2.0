@@ -23,7 +23,7 @@ namespace MegaMarketing2Reborn
         private string excelFileName = "excel.xlsx";
         //UI to Excel
         private int lastRegisterIndex = 0;
-        private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
+        private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/", UriKind.RelativeOrAbsolute).ToString();
         private int lastRegisterPlace = 1;
 
         public void CreateExcelDoc()
@@ -54,9 +54,7 @@ namespace MegaMarketing2Reborn
 		{
 			app = new _Excel.Application();
 			app.Visible = false;
-			//workbook = app.Workbooks.Open(excelFilePath + excelFileName);
-            workbook = app.Workbooks.Open(excelFilePath);
-
+			workbook = app.Workbooks.Open(excelFilePath + excelFileName);
         }
 
 		public void Write(int i, int j, string text)
@@ -67,6 +65,7 @@ namespace MegaMarketing2Reborn
         public void Write(DataGrid dataGrid)
         {
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+			//if (((DataView)dataGrid.ItemsSource).Table.HasErrors) return;
             for (int j = 0; j < dataGrid.Columns.Count; j++)
             {
                 //Range myRange = (Range)worksheet.Cells[1, j + 1];
@@ -78,12 +77,15 @@ namespace MegaMarketing2Reborn
 
             for (int i = 0; i < dataGrid.Columns.Count; i++)
             {
-                for (int j = 0; j < dataGrid.Items.Count; j++)
-                {
-                    //TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
-                    //_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
-                    //myRange.Value2 = b.Text;
-                    worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+				for (int j = 0; j < dataGrid.Items.Count; j++)
+				{
+					//TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
+					//_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
+					//myRange.Value2 = b.Text;
+					if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null || 
+						(dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
+					else
+					worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
                 }
             }
 
@@ -100,7 +102,7 @@ namespace MegaMarketing2Reborn
                 string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
 
                 dt.Columns.Add(
-				new DataColumn{ ColumnName = columnName, DataType = typeof(string)});
+				new DataColumn{ ColumnName = columnName, DataType = typeof(int)});
 			}
             for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
             {
@@ -114,7 +116,7 @@ namespace MegaMarketing2Reborn
                     }
                     catch
                     {
-
+						cell = "0";
                     }
                     finally
                     {
@@ -173,6 +175,7 @@ namespace MegaMarketing2Reborn
             lastRegisterIndex++;
             lastRegisterPlace = (start + i);
             Save();
+			Close();
         }
 
         public void SetExcelFilePath(string path)

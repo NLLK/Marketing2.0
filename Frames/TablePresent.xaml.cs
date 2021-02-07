@@ -32,8 +32,8 @@ namespace MegaMarketing2Reborn.Frames
 			Excel excel = new Excel();
 			excel.OpenDoc();
 			DataView dv = excel.Read();
-            //TODO: залупа
-            dataGrid.ItemsSource = dv;
+			//TODO: залупа
+			dataGrid.ItemsSource = dv;
 			excel.Close();
 		}
 
