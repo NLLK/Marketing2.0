@@ -1,54 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MegaMarketing2Reborn.SettingsSetup
 {
-    public class StartupFoldersConfigSection : ConfigurationSection
+   public class PropsFields
     {
-        [ConfigurationProperty("Folders")]
-        public FoldersCollection FolderItems
-        {
-            get { return ((FoldersCollection)(base["Folders"])); }
-        }
+        public String XmlFileName = Environment.CurrentDirectory + "\\settings.xml";
+
+        public String ExcelFilePath = Environment.CurrentDirectory;
+        public String ExcelFileName = "excel";
+
     }
-
-    [ConfigurationCollection(typeof(FolderElement))]
-    public class FoldersCollection : ConfigurationElementCollection
+    //Класс работы с настройками
+    public class Props
     {
-        protected override ConfigurationElement CreateNewElement()
-        {
-            return new FolderElement();
-        }
+        public PropsFields Fields;
 
-        protected override object GetElementKey(ConfigurationElement element)
+        public Props()
         {
-            return ((FolderElement)(element)).FolderType;
+            Fields = new PropsFields();
+            if (!File.Exists(Fields.XmlFileName))
+            {
+                File.Create(Fields.XmlFileName).Close();
+                WriteXml();
+            }
+            ReadXml();
         }
-
-        public FolderElement this[int idx]
+        //Запись настроек в файл
+        public void WriteXml()
         {
-            get { return (FolderElement)BaseGet(idx); }
+            XmlSerializer ser = new XmlSerializer(typeof(PropsFields));
+
+            TextWriter writer = new StreamWriter(Fields.XmlFileName);
+            ser.Serialize(writer, Fields);
+            writer.Close();
         }
-    }
-    public class FolderElement : ConfigurationElement
-    {
-
-        [ConfigurationProperty("folderType", DefaultValue = "", IsKey = true, IsRequired = true)]
-        public string FolderType
+        //Чтение насроек из файла
+        public void ReadXml()
         {
-            get { return ((string)(base["folderType"])); }
-            set { base["folderType"] = value; }
-        }
-
-        [ConfigurationProperty("path", DefaultValue = "", IsKey = false, IsRequired = false)]
-        public string Path
-        {
-            get { return ((string)(base["path"])); }
-            set { base["path"] = value; }
+            if (File.Exists(Fields.XmlFileName))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(PropsFields));
+                TextReader reader = new StreamReader(Fields.XmlFileName);
+                Fields = ser.Deserialize(reader) as PropsFields;
+                reader.Close();
+            }
+            else
+            {
+                //можно написать вывод сообщения если файла не существует
+            }
         }
     }
 }

@@ -9,10 +9,11 @@ using System.Windows.Controls;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using MegaMarketing2Reborn.SettingsSetup;
 
 namespace MegaMarketing2Reborn
 {
-    class Excel
+    public class Excel
     {
         //Excel
         private _Excel.Application app = null;
@@ -25,6 +26,13 @@ namespace MegaMarketing2Reborn
         private int lastRegisterIndex = 0;
         private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
         private int lastRegisterPlace = 1;
+
+        public Excel()
+        {
+            Props props = new Props();
+            props.ReadXml();
+            excelFilePath = props.Fields.ExcelFilePath;
+        }
 
         public void CreateExcelDoc()
         {
@@ -39,7 +47,9 @@ namespace MegaMarketing2Reborn
                 app.Visible = false;
                 app.DisplayAlerts = false;
                 workbook = app.Workbooks.Add(1);
+                OpenDoc();
                 worksheet = (_Excel.Worksheet)workbook.Sheets[1];
+                
             }
             catch (Exception e)
             {
@@ -52,10 +62,8 @@ namespace MegaMarketing2Reborn
 
 		public void OpenDoc()
 		{
-			app = new _Excel.Application();
-			app.Visible = false;
-			//workbook = app.Workbooks.Open(excelFilePath + excelFileName);
-            workbook = app.Workbooks.Open(excelFilePath);
+            workbook = app.Workbooks.Open(excelFilePath + "\\" + excelFileName);
+            //workbook = app.Workbooks.Open(excelFileName);
 
         }
 
@@ -66,6 +74,7 @@ namespace MegaMarketing2Reborn
 
         public void Write(DataGrid dataGrid)
         {
+            
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
             for (int j = 0; j < dataGrid.Columns.Count; j++)
             {
@@ -142,7 +151,7 @@ namespace MegaMarketing2Reborn
         
         public void Save()
         {
-            workbook.SaveAs(excelFilePath + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            workbook.SaveAs(excelFilePath + "\\"+excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
         }
 
         public void AddRegister(List<string> inputList)
