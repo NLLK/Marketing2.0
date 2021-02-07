@@ -19,29 +19,24 @@ namespace MegaMarketing2Reborn
         Button NamesDeleteButton;
         Button NamesAddNamesButton;
         private List<UIElement> NamesTextBoxesList = new List<UIElement>();
-        private Label RegistersName;
+        private Label RegisterName1;
         private bool RegisterShowed = false;
         string questionnaireName;
 
-        private Props props;
         private Excel excel;
         public MainWindow()
         {
             excel = new Excel();
             excel.CreateDoc();
 
-            props = new Props();
-            
             InitializeComponent();
             RegisterChooseScale.SelectedIndex = 0;
             RegisterCanvas.Visibility = Visibility.Hidden;
-
-
         }
 
         private void OpenTable(object sender, RoutedEventArgs e)
         {
-            TablePresent table2 = new TablePresent(excel);
+            TablePresent table2 = new TablePresent();
             this.Content = table2;
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
@@ -56,10 +51,10 @@ namespace MegaMarketing2Reborn
                             //обязательно для работающих частей
                             RegisterShowed = true;
 
-                            RegistersName = new Label { Content = "Наименования:", FontSize = 14 };
-                            Canvas.SetLeft(RegistersName, 8);
-                            Canvas.SetTop(RegistersName, 192);
-                            RegisterCanvas.Children.Add(RegistersName);
+                            RegisterName1 = new Label { Content = "Наименования:", FontSize = 14 };
+                            Canvas.SetLeft(RegisterName1, 8);
+                            Canvas.SetTop(RegisterName1, 192);
+                            RegisterCanvas.Children.Add(RegisterName1);
 
                             TextBox p = new TextBox
                             {
@@ -241,9 +236,9 @@ namespace MegaMarketing2Reborn
             }
             NamesTextBoxesList.Clear();
 
-            if (RegistersName != null)
+            if (RegisterName1 != null)
             {
-                RegistersName.Content = "";
+                RegisterName1.Content = "";
             }
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
             NamesAddButtonPlace = new Point(10, 275);
@@ -274,20 +269,18 @@ namespace MegaMarketing2Reborn
             WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
             FBD.ShowNewFolderButton = true;
             FBD.Description = "Выберите путь файла Excel...";
-            props.ReadXml();
-            if (props.Fields.ExcelFilePath != Environment.CurrentDirectory)
-            {
-                FBD.SelectedPath = props.Fields.ExcelFilePath;
-            }
+
+            Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            StartupFoldersConfigSection section = (StartupFoldersConfigSection)cfg.Sections["StartupFolders"];
+
+            if (section.FolderItems[0].Path != "") FBD.SelectedPath = section.FolderItems[0].Path;
 
             if (FBD.ShowDialog() == WinForms.DialogResult.OK)
             {
-                props.Fields.ExcelFilePath = FBD.SelectedPath;//.Replace("\\", "/");
-                props.WriteXml();
+                section.FolderItems[0].Path = FBD.SelectedPath;
+                cfg.Save();
                 excel.SetExcelFilePath(FBD.SelectedPath);
             }
-
-
         }
     }
 }
