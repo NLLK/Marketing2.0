@@ -49,7 +49,7 @@ namespace MegaMarketing2Reborn
                 workbook = app.Workbooks.Add(1);
                 OpenDoc();
                 worksheet = (_Excel.Worksheet)workbook.Sheets[1];
-                
+
             }
             catch (Exception e)
             {
@@ -60,21 +60,21 @@ namespace MegaMarketing2Reborn
             }
         }
 
-		public void OpenDoc()
-		{
+        public void OpenDoc()
+        {
             workbook = app.Workbooks.Open(excelFilePath + "\\" + excelFileName);
             //workbook = app.Workbooks.Open(excelFileName);
 
         }
 
-		public void Write(int i, int j, string text)
-		{
-			worksheet.Cells[i, j].Value = text;
-		}
+        public void Write(int i, int j, string text)
+        {
+            worksheet.Cells[i, j].Value = text;
+        }
 
         public void Write(DataGrid dataGrid)
         {
-            
+
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
             for (int j = 0; j < dataGrid.Columns.Count; j++)
             {
@@ -89,10 +89,10 @@ namespace MegaMarketing2Reborn
             {
                 for (int j = 0; j < dataGrid.Items.Count; j++)
                 {
-                    //TextBlock b = dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock;
-                    //_Excel.Range myRange = (_Excel.Range)worksheet.Cells[j + 2, i + 1];
-                    //myRange.Value2 = b.Text;
-                    worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+                    if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
+                        (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
+                    else
+                        worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
                 }
             }
 
@@ -100,17 +100,17 @@ namespace MegaMarketing2Reborn
         }
 
         public System.Data.DataView Read()
-		{
+        {
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
-			workSheet_range = worksheet.UsedRange;
-			System.Data.DataTable dt = new System.Data.DataTable();
+            workSheet_range = worksheet.UsedRange;
+            System.Data.DataTable dt = new System.Data.DataTable();
             for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
             {
                 string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
 
                 dt.Columns.Add(
-				new DataColumn{ ColumnName = columnName, DataType = typeof(string)});
-			}
+                new DataColumn { ColumnName = columnName, DataType = typeof(int) });
+            }
             for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
             {
                 DataRow dr = dt.NewRow();
@@ -123,7 +123,7 @@ namespace MegaMarketing2Reborn
                     }
                     catch
                     {
-
+                        cell = "0";
                     }
                     finally
                     {
@@ -136,22 +136,22 @@ namespace MegaMarketing2Reborn
             return new DataView(dt);
         }
 
-		public void Close()
-		{
-			workbook.Close();
-			app.Quit();
-			System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
-			System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
-			System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
-		}
+        public void Close()
+        {
+            workbook.Close();
+            app.Quit();
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
+        }
         public void WriteFormula(int i, int j, string text)
         {
             worksheet.Cells[i, j].Formula = text;
         }
-        
+
         public void Save()
         {
-            workbook.SaveAs(excelFilePath + "\\"+excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            workbook.SaveAs(excelFilePath + "\\" + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
         }
 
         public void AddRegister(List<string> inputList)
