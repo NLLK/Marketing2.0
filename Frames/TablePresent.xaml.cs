@@ -21,28 +21,24 @@ namespace MegaMarketing2Reborn.Frames
     /// </summary>
     public partial class TablePresent : Page
     {
-        private Excel excel;
-        public TablePresent()
+        private DataTable dataTable;
+        public Excel excel;
+        public TablePresent(Excel excel1)
         {
+            this.excel = excel1;
             InitializeComponent();
         }
 
 		private void ButtonLoad_Click(object sender, RoutedEventArgs e)
 		{
-			Excel excel = new Excel();
-			excel.OpenDoc();
-			DataView dv = excel.Read();
-			//TODO: залупа
-			dataGrid.ItemsSource = dv;
-			excel.Close();
-		}
+            DataView dv = excel.Read();
+            dataGrid.ItemsSource = dv;
+            dataTable = dv.Table;
+        }
 
 		private void ButtonChange_Click(object sender, RoutedEventArgs e)
 		{
-			Excel excel = new Excel();
-			excel.OpenDoc();
-			excel.Write(dataGrid);
-			excel.Close();
-		}
+            excel.Write(dataGrid);
+        }
 	}
 }

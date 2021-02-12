@@ -29,9 +29,7 @@ namespace MegaMarketing2Reborn
 
         public Excel()
         {
-            Props props = new Props();
-            props.ReadXml();
-            excelFilePath = props.Fields.ExcelFilePath;
+            UpdateExcelFilePath();
         }
 
         public void CreateExcelDoc()
@@ -46,10 +44,15 @@ namespace MegaMarketing2Reborn
                 app = new _Excel.Application();
                 app.Visible = false;
                 app.DisplayAlerts = false;
-                workbook = app.Workbooks.Add(1);
-                OpenDoc();
+                if (File.Exists(excelFilePath + "\\" + excelFileName))
+                {
+                    OpenDoc();
+                }
+                else
+                {
+                    workbook = app.Workbooks.Add(1);
+                }
                 worksheet = (_Excel.Worksheet)workbook.Sheets[1];
-
             }
             catch (Exception e)
             {
@@ -101,15 +104,25 @@ namespace MegaMarketing2Reborn
 
         public System.Data.DataView Read()
         {
+            UpdateExcelFilePath();
+            //OpenDoc();
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
             workSheet_range = worksheet.UsedRange;
             System.Data.DataTable dt = new System.Data.DataTable();
+
             for (int Cnum = 1; Cnum <= workSheet_range.Columns.Count; Cnum++)
             {
-                string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
+                try
+                {
+                    string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
+                    dt.Columns.Add(new DataColumn { ColumnName = columnName, DataType = typeof(int) });
+                }
+                catch
+                {
+                    return new DataView(dt);
+                }
 
-                dt.Columns.Add(
-                new DataColumn { ColumnName = columnName, DataType = typeof(int) });
+
             }
             for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
             {
@@ -151,7 +164,15 @@ namespace MegaMarketing2Reborn
 
         public void Save()
         {
+            UpdateExcelFilePath();
             workbook.SaveAs(excelFilePath + "\\" + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+        }
+
+        private void UpdateExcelFilePath()
+        {
+            Props props = new Props();
+            props.ReadXml();
+            excelFilePath = props.Fields.ExcelFilePath;
         }
 
         public void AddRegister(List<string> inputList)
