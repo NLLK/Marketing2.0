@@ -44,7 +44,7 @@
 
                     <Label Content="Регистр 1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="28,2,28,4"/>
                     <Label Content="Вопрос 1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Margin="27,2,31,28" Grid.RowSpan="2"/>
-                    <Button Grid.Column="1" Grid.Row="1" Content="+" x:Name="AddRegisterButton" Tag="1.0" Margin="1,1,116,29" RenderTransformOrigin="0.492,0.533" Grid.RowSpan="2" Grid.ColumnSpan="2" Click="AddRegisterButton_Click"/>
+                    <Button Grid.Column="1" Grid.Row="1" Content="+" x:Name="AddRegisterButton" Tag="1.0" Margin="1,1,1,1" Click="AddRegisterButton_Add"/>
                 </Grid>
             </StackPanel>
         </ScrollViewer>
@@ -61,7 +61,7 @@
             <Label Content="Выберите шкалу из списка:" Canvas.Left="1" Canvas.Top="130" FontSize="14"/>
             <Button x:Name="RegisterAddScaleButton" Content="+" Canvas.Left="284" Canvas.Top="163" Width="19" Height="19" HorizontalAlignment="Left" VerticalAlignment="Top" Click="RegisterAddScaleButton_Click"/>
             <Label Content="Текст вопроса:" Canvas.Top="64" FontSize="14" RenderTransformOrigin="0.481,0.483"/>
-            <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterAnswerText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
+            <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterQuestionText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
             <Rectangle Fill="#FFF4F4F5" Canvas.Left="6" Height="106" Stroke="Black" VerticalAlignment="Top" Width="306" Canvas.Top="197" Name="RegisterNamesRectangle" Visibility="Hidden"/>
             <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterAddRegister_Click"/>
         </Canvas>
