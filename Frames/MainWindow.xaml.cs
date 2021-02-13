@@ -22,6 +22,11 @@ namespace MegaMarketing2Reborn
         private Label RegistersName;
         private bool RegisterShowed = false;
         string questionnaireName;
+        private int questionNumber = 1;
+
+        private Button LastAddRegisterButton;
+
+        private List<UsersRegister> UsersRegisterList = new List<UsersRegister>();
 
         private Props props;
         private Excel excel;
@@ -36,6 +41,7 @@ namespace MegaMarketing2Reborn
             RegisterChooseScale.SelectedIndex = 0;
             RegisterCanvas.Visibility = Visibility.Hidden;
 
+            LastAddRegisterButton = AddRegisterButton;
 
         }
 
@@ -184,27 +190,55 @@ namespace MegaMarketing2Reborn
         {
             //если не показано меню для заполнения регистров
             if (!RegisterShowed) return;
-
             //добавление данных в список
 
-            List<string> ls = new List<string>();
+            string questionName="";
+            int scale = RegisterChooseScale.SelectedIndex;
+            List<string> answersList = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
                 {
                     TextBox tx = (TextBox)el;
-                    ls.Add(tx.Text);
+                    if (tx.Name == "RegisterQuestionText")
+                    {
+                        questionName = tx.Text;
+                        continue;
+                    }
+                    answersList.Add(tx.Text);
                 }
             }
+            UsersRegister register = new UsersRegister(questionName, scale, answersList);
 
-            //очистка интерфейса
-            RegisterShowed = false;
+            //сохранение в список
+            UsersRegisterList.Add(register);
+            //отправка в excel. Если успешно, то закрываем лавочку
+            if (excel.AddRegister(register))
+            {
+                questionNumber++;//+1 вопрос
+                //очистка интерфейса
+                RegisterShowed = false;
 
-            RegisterCanvas.Visibility = Visibility.Hidden;
-            DeleteRegisterRectangle();
+                RegisterCanvas.Visibility = Visibility.Hidden;
+                DeleteRegisterRectangle();
 
-            //отправка в excel
-            excel.AddRegister(ls);
+                LastAddRegisterButton.Content = "изменить";
+                LastAddRegisterButton.Click += AddRegisterButton_Edit;
+
+                Button button = new Button();
+                button.Tag = $"{questionNumber}";
+                button.Name = $"{AddRegisterButton.Name}{questionNumber}";
+                button.Content = "+";
+                button.Margin = AddRegisterButton.Margin;
+                button.Click += AddRegisterButton_Add;
+
+                Grid.SetRow(button, questionNumber);
+                Grid.SetColumn(button,1);
+                mainGrid.Children.Add(button);
+                LastAddRegisterButton = button;
+            }
+
+
 
         }
 
@@ -217,7 +251,7 @@ namespace MegaMarketing2Reborn
                 if (el.GetType().Name == "TextBox")
                 {
                     TextBox tx = (TextBox)el;
-                    if (tx.Name == "RegisterAnswerText") { tx.Text = ""; continue; }
+                    if (tx.Name == "RegisterQuestionText") { tx.Text = ""; continue; }
                     else
                     {
                         RegisterCanvas.Children.Remove(el);
@@ -249,13 +283,17 @@ namespace MegaMarketing2Reborn
             NamesAddButtonPlace = new Point(10, 275);
         }
 
-        private void AddRegisterButton_Click(object sender, RoutedEventArgs e)
+        private void AddRegisterButton_Add(object sender, RoutedEventArgs e)
         {
             RegisterCanvas.Visibility = Visibility.Visible;
 
-            //mainGrid
         }
 
+        private void AddRegisterButton_Edit(object sender, RoutedEventArgs e)
+        {
+            //RegisterCanvas.Visibility = Visibility.Visible;
+
+        }
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {

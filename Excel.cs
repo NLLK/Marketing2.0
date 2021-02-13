@@ -9,7 +9,9 @@ using System.Windows.Controls;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using System.Windows.Forms;
 using MegaMarketing2Reborn.SettingsSetup;
+using DataGrid = System.Windows.Controls.DataGrid;
 
 namespace MegaMarketing2Reborn
 {
@@ -26,6 +28,8 @@ namespace MegaMarketing2Reborn
         private int lastRegisterIndex = 0;
         private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
         private int lastRegisterPlace = 1;
+
+        private bool IfFileExist = true;
 
         public Excel()
         {
@@ -58,16 +62,12 @@ namespace MegaMarketing2Reborn
             {
                 Console.Write(e.ToString());
             }
-            finally
-            {
-            }
         }
 
         public void OpenDoc()
         {
             workbook = app.Workbooks.Open(excelFilePath + "\\" + excelFileName);
             //workbook = app.Workbooks.Open(excelFileName);
-
         }
 
         public void Write(int i, int j, string text)
@@ -178,10 +178,28 @@ namespace MegaMarketing2Reborn
             worksheet.Cells[i, j].Formula = text;
         }
 
-        public void Save()
+        public bool Save()
         {
             UpdateExcelFilePath();
-            workbook.SaveAs(excelFilePath + "\\" + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            try
+            {
+                workbook.SaveAs(excelFilePath + "\\" + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    "Ошибка доступа к записи. Закройте другие процессы, использующие этот файл",
+                    "Ошибка",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
+
+                Console.WriteLine(e);
+                return false;
+            }
+
+            return true;
         }
 
         private void UpdateExcelFilePath()
@@ -191,34 +209,59 @@ namespace MegaMarketing2Reborn
             excelFilePath = props.Fields.ExcelFilePath;
         }
 
-        public void AddRegister(List<string> inputList)
+        public bool AddRegister(UsersRegister register)
         {
-            int start = lastRegisterPlace;
-            int i = 0;
-            for (i = 0; i < inputList.Count; i++)
+            //если файл существует, то перезаписать тот, что был, единожды
+            if (File.Exists(excelFilePath + "\\" + excelFileName) && IfFileExist)
             {
-                if (i == 0)
+                IfFileExist = false;
+                try
                 {
-                    if (inputList[i].Equals("")) Write(1, start + i, $"{lastRegisterIndex + 1}");
-                    else
-                    {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}({inputList[i]})");
-                    }
-
+                    workbook.Close();
                 }
+                catch (System.Runtime.InteropServices.COMException e)
+                {
+                    Console.WriteLine(e);
+                    
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
+                    
+                    app = new _Excel.Application();
+                    app.Visible = false;
+                    app.DisplayAlerts = false;
+                }
+                finally
+                {
+                    workbook = app.Workbooks.Add(1);
+                    worksheet = (_Excel.Worksheet)workbook.Sheets[1];
+                }
+            }
+
+            List<string> inputList = register.AnswersList;
+            int start = lastRegisterPlace;
+
+            if (register.Question.Equals("")) Write(1, start, $"{lastRegisterIndex + 1}");
+            else
+            {
+                Write(1, start, $"{lastRegisterIndex + 1}({register.Question})");
+            }
+
+            int i = 1;
+            for (i = 1; i <= inputList.Count; i++)
+            {
+                if (inputList[i-1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
                 else
                 {
-                    if (inputList[i].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
-                    else
-                    {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
-                    }
+                    Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
                 }
+
             }
 
             lastRegisterIndex++;
             lastRegisterPlace = (start + i);
-            Save();
+
+            return Save();
         }
 
         public void SetExcelFilePath(string path)
