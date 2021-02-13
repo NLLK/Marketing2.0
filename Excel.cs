@@ -90,12 +90,28 @@ namespace MegaMarketing2Reborn
 
             for (int i = 0; i < dataGrid.Columns.Count; i++)
             {
-                for (int j = 0; j < dataGrid.Items.Count; j++)
+				int sum = 0;
+				for (int j = 0; j < dataGrid.Items.Count; j++)
                 {
-                    if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
-                        (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
-                    else
-                        worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+					string temp;
+					int temp2;
+					if (j != dataGrid.Items.Count - 1)
+					{
+						if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
+						(dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text.Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
+						else
+						{
+							worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+							temp = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+							//if (temp.Equals("")) temp2 = 0;
+							temp2 = int.Parse(temp);
+							if (temp2 == 1) sum++;
+						}	
+					}
+					else
+					{
+						worksheet.Cells[j + 2, i + 1].Value2 = sum;
+					}
                 }
             }
 
