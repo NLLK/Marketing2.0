@@ -24,8 +24,10 @@ namespace MegaMarketing2Reborn
         private _Excel.Range workSheet_range = null;
 
         private string excelFileName = "excel.xlsx";
+
         //UI to Excel
-        private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
+        private string excelFilePath =
+            new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
 
         private bool IfFileExist = true;
 
@@ -46,15 +48,8 @@ namespace MegaMarketing2Reborn
                 app = new _Excel.Application();
                 app.Visible = false;
                 app.DisplayAlerts = false;
-                if (File.Exists(excelFilePath + "\\" + excelFileName))
-                {
-                    OpenDoc();
-                }
-                else
-                {
-                    workbook = app.Workbooks.Add(1);
-                }
-                worksheet = (_Excel.Worksheet)workbook.Sheets[1];
+                workbook = app.Workbooks.Add(1);
+                worksheet = (_Excel.Worksheet) workbook.Sheets[1];
             }
             catch (Exception e)
             {
@@ -64,8 +59,8 @@ namespace MegaMarketing2Reborn
 
         public void OpenDoc()
         {
-            workbook = app.Workbooks.Open(excelFilePath + "\\" + excelFileName);
-            //workbook = app.Workbooks.Open(excelFileName);
+            workbook = app.Workbooks.Open(GetFullExcelFilePath());
+            worksheet = (_Excel.Worksheet)workbook.Sheets[1];
         }
 
         public void Write(int i, int j, string text)
@@ -75,7 +70,7 @@ namespace MegaMarketing2Reborn
 
         public void Write(DataGrid dataGrid)
         {
-            worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+            worksheet = (_Excel.Worksheet) workbook.Sheets.get_Item(1);
             for (int j = 0; j < dataGrid.Columns.Count; j++)
             {
                 //Range myRange = (Range)worksheet.Cells[1, j + 1];
@@ -95,10 +90,12 @@ namespace MegaMarketing2Reborn
                     if (j != dataGrid.Items.Count - 1)
                     {
                         if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
-                        (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text.Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
+                            (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text.Equals(""))
+                            worksheet.Cells[j + 2, i + 1].Value2 = "0";
                         else
                         {
-                            worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+                            worksheet.Cells[j + 2, i + 1].Value2 =
+                                (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
                             temp = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
                             //if (temp.Equals("")) temp2 = 0;
                             temp2 = int.Parse(temp);
@@ -119,7 +116,7 @@ namespace MegaMarketing2Reborn
         {
             UpdateExcelFilePath();
             //OpenDoc();
-            worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
+            worksheet = (_Excel.Worksheet) workbook.Sheets.get_Item(1);
             workSheet_range = worksheet.UsedRange;
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -128,7 +125,7 @@ namespace MegaMarketing2Reborn
                 try
                 {
                     string columnName = (workSheet_range.Cells[1, Cnum] as _Excel.Range).get_Value().ToString();
-                    dt.Columns.Add(new DataColumn { ColumnName = columnName, DataType = typeof(int) });
+                    dt.Columns.Add(new DataColumn {ColumnName = columnName, DataType = typeof(int)});
                 }
                 catch
                 {
@@ -137,6 +134,7 @@ namespace MegaMarketing2Reborn
 
 
             }
+
             for (int Rnum = 2; Rnum <= workSheet_range.Rows.Count; Rnum++)
             {
                 DataRow dr = dt.NewRow();
@@ -156,8 +154,10 @@ namespace MegaMarketing2Reborn
                         dr[Cnum - 1] = cell;
                     }
                 }
+
                 dt.Rows.Add(dr);
             }
+
             dt.AcceptChanges();
             return new DataView(dt);
         }
@@ -170,6 +170,7 @@ namespace MegaMarketing2Reborn
             System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
             System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
         }
+
         public void WriteFormula(int i, int j, string text)
         {
             worksheet.Cells[i, j].Formula = text;
@@ -180,7 +181,8 @@ namespace MegaMarketing2Reborn
             UpdateExcelFilePath();
             try
             {
-                workbook.SaveAs(excelFilePath + "\\" + excelFileName, ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+                workbook.SaveAs(GetFullExcelFilePath(),
+                    ConflictResolution: _Excel.XlSaveConflictResolution.xlLocalSessionChanges);
             }
             catch (Exception e)
             {
@@ -208,32 +210,6 @@ namespace MegaMarketing2Reborn
 
         public bool AddRegistersToExcel(List<UsersRegister> list)
         {
-            //если файл существует, то перезаписать тот, что был, единожды
-            if (File.Exists(excelFilePath + "\\" + excelFileName) && IfFileExist)
-            {
-                IfFileExist = false;
-                try
-                {
-                    workbook.Close();
-                }
-                catch (System.Runtime.InteropServices.COMException e)
-                {
-                    Console.WriteLine(e);
-
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
-
-                    app = new _Excel.Application();
-                    app.Visible = false;
-                    app.DisplayAlerts = false;
-                }
-                finally
-                {
-                    workbook = app.Workbooks.Add(1);
-                    worksheet = (_Excel.Worksheet)workbook.Sheets[1];
-                }
-            }
 
             int lastRegisterPlace = 1;
             int lastRegisterIndex = 0;
@@ -255,7 +231,7 @@ namespace MegaMarketing2Reborn
                     if (inputList[i - 1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
                     else
                     {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i-1]})");
+                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i - 1]})");
                     }
 
                 }
@@ -268,9 +244,45 @@ namespace MegaMarketing2Reborn
             return Save();
         }
 
+        public void CheckIfFileExist()
+        {
+            //если файл существует, то перезаписать тот, что был, единожды
+            if (File.Exists(GetFullExcelFilePath()) && IfFileExist)
+            {
+                IfFileExist = false;
+                try
+                {
+                    workbook.Close();
+                }
+                catch (System.Runtime.InteropServices.COMException e)
+                {
+                    Console.WriteLine(e);
+
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
+
+                    app = new _Excel.Application();
+                    app.Visible = false;
+                    app.DisplayAlerts = false;
+                }
+                finally
+                {
+                    workbook = app.Workbooks.Add(1);
+                    worksheet = (_Excel.Worksheet) workbook.Sheets[1];
+                }
+            }
+
+        }
+
         public void SetExcelFilePath(string path)
         {
             excelFilePath = path;
+        }
+
+        public string GetFullExcelFilePath()
+        {
+            return excelFilePath + "\\" + excelFileName;
         }
     }
 }
