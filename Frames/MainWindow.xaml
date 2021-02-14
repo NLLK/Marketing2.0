@@ -39,7 +39,7 @@
 
                     <Label Content="Регистр 1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="28,2,28,4"/>
                     <Label Content="Вопрос 1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Margin="27,2,31,28" Grid.RowSpan="2"/>
-                    <Button Grid.Column="1" Grid.Row="1" Content="+" x:Name="AddRegisterButton1" Tag="1" Margin="1,1,1,1" Click="AddRegisterButton_Add"/>
+                    <Button Grid.Column="1" Grid.Row="1" Content="+" x:Name="AddRegisterButton1" Tag="1" Margin="1,1,1,1" Click="AddRegisterButton_Click"/>
                 </Grid>
             </StackPanel>
         </ScrollViewer>
@@ -59,7 +59,7 @@
             <Label Content="Текст вопроса:" Canvas.Top="64" FontSize="14" RenderTransformOrigin="0.481,0.483"/>
             <TextBox Style="{StaticResource placeHolder}" x:Name="RegisterQuestionText" Canvas.Left="5" TextWrapping="Wrap" Tag="Текст вопроса (не обязательно)" Canvas.Top="93" Width="298" Height="33" Foreground="#FF787878"/>
             <Rectangle Fill="#FFF4F4F5" Canvas.Left="6" Height="106" Stroke="Black" VerticalAlignment="Top" Width="306" Canvas.Top="197" Name="RegisterNamesRectangle" Visibility="Hidden"/>
-            <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterAddRegister_Add"/>
+            <Button x:Name="RegisterAddRegister" Content="Добавить регистр" Canvas.Left="206" Canvas.Top="631"  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Click="RegisterAddRegister_Click"/>
         </Canvas>
     </Grid>
 </Window>
