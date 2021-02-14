@@ -255,7 +255,7 @@ namespace MegaMarketing2Reborn
                     if (inputList[i - 1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
                     else
                     {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
+                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i-1]})");
                     }
 
                 }

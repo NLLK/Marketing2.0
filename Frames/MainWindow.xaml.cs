@@ -21,9 +21,9 @@ namespace MegaMarketing2Reborn
         private List<UIElement> NamesTextBoxesList = new List<UIElement>();
 
         private Label RegistersName;//название регистра
-        private bool RegisterShowed = false;//состояние отображения регистра //TODO:заменить на проверку RegisterCanvas.Visibility, наверное
         string questionnaireName;//название анкеты
         private int questionNumber = 1;//номер последнего вопроса
+        private bool RegisterEditing = false;
 
         private Button LastAddRegisterButton;//последняя кнопка "добавить регистр" слева, которая будет отображаться плюсиком
 
@@ -60,14 +60,14 @@ namespace MegaMarketing2Reborn
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (RegisterShowed == false)
+            if (RegisterNamesRectangle.Visibility == Visibility.Hidden)
             {
                 switch (RegisterChooseScale.SelectedIndex)
                 {
                     case 0:
                         {
                             //обязательно для работающих частей
-                            RegisterShowed = true;
+                            RegisterNamesRectangle.Visibility = Visibility.Visible;
                             //
                             RegistersName = new Label { Content = "Наименования:", FontSize = 14 };
                             Canvas.SetLeft(RegistersName, 8);
@@ -77,7 +77,7 @@ namespace MegaMarketing2Reborn
                             NamesAddButtonPlace = new Point(10, 225);
                             for (int i = 1; i <= 2; i++)
                             {
-                                AddTextboxToRegister($"Наименование {i}", "", NamesTextBoxesList, 10, 200+25*i);
+                                AddTextboxToRegister($"Наименование {i}", "", NamesTextBoxesList, 10, 200 + 25 * i);
                             }
                             RegisterNamesRectangle.Visibility = Visibility.Visible;
 
@@ -123,8 +123,8 @@ namespace MegaMarketing2Reborn
                 RegisterNamesRectangle.Height -= 25;
 
 
-                RegisterCanvas.Children.Remove(NamesTextBoxesList[NamesLastTextBoxIndex-1]);
-                NamesTextBoxesList.RemoveAt(NamesLastTextBoxIndex-1);
+                RegisterCanvas.Children.Remove(NamesTextBoxesList[NamesLastTextBoxIndex - 1]);
+                NamesTextBoxesList.RemoveAt(NamesLastTextBoxIndex - 1);
                 NamesLastTextBoxIndex--;
             }
             if (NamesLastTextBoxIndex == 2)
@@ -135,7 +135,7 @@ namespace MegaMarketing2Reborn
 
         private void RegisterAddNames_Click(object sender, RoutedEventArgs e)
         {
-            AddTextboxToRegister($"Наименование {NamesLastTextBoxIndex+1}", "", NamesTextBoxesList, NamesAddButtonPlace.X, NamesAddButtonPlace.Y);
+            AddTextboxToRegister($"Наименование {NamesLastTextBoxIndex + 1}", "", NamesTextBoxesList, NamesAddButtonPlace.X, NamesAddButtonPlace.Y);
         }
 
         private void AddTextboxToRegister(string name, string text, List<UIElement> list, double x, double y)
@@ -179,12 +179,11 @@ namespace MegaMarketing2Reborn
 
         }
 
-        private void RegisterAddRegister_Add(object sender, RoutedEventArgs e)
+        private void RegisterAddRegister_Click(object sender, RoutedEventArgs e)
         {
             //если не показано меню для заполнения регистров
-            if (!RegisterShowed) return;
-            //добавление данных в список
-
+            if (RegisterNamesRectangle.Visibility == Visibility.Hidden) return;
+            //добавление данных из формы
             string questionName = "";
             int scale = RegisterChooseScale.SelectedIndex;
             List<string> answersList = new List<string>();
@@ -202,93 +201,48 @@ namespace MegaMarketing2Reborn
                 }
             }
 
-            UsersRegister register = new UsersRegister(questionName, scale, answersList, questionNumber);
-            //сохранение в список
-            UsersRegisterList.Add(register);
+            if (!RegisterEditing)
+            {//добавление регистра
+                UsersRegister register = new UsersRegister(questionName, scale, answersList, questionNumber);
+                //сохранение в список
+                UsersRegisterList.Add(register);
 
-            questionNumber++;//+1 вопрос
+                questionNumber++;//+1 вопрос
 
-            //очистка интерфейса, изменение и добавление кнопок
-            RegisterShowed = false;
+                //очистка интерфейса, изменение и добавление кнопок
+                
+                LastAddRegisterButton.Content = "изменить";
 
-            RegisterCanvas.Visibility = Visibility.Hidden;
-            ResetRegisterRectangle();
+                mainGrid.RowDefinitions.Add(new RowDefinition { MinHeight = 30 });
 
-            LastAddRegisterButton.Content = "изменить";
-            LastAddRegisterButton.Click += AddRegisterButton_Edit;
+                Button button = new Button();
+                button.Tag = $"{questionNumber}";
+                button.Name = $"{AddRegisterButton1.Name}{questionNumber}";
+                button.Content = "+";
+                button.Margin = AddRegisterButton1.Margin;
+                button.Click += AddRegisterButton_Click;
 
-            mainGrid.RowDefinitions.Add(new RowDefinition { MinHeight = 30 });
-
-            Button button = new Button();
-            button.Tag = $"{questionNumber}";
-            button.Name = $"{AddRegisterButton1.Name}{questionNumber}";
-            button.Content = "+";
-            button.Margin = AddRegisterButton1.Margin;
-            button.Click += AddRegisterButton_Add;
-
-            Grid.SetRow(button, questionNumber);
-            Grid.SetColumn(button, 1);
-            mainGrid.Children.Add(button);
-            LastAddRegisterButton = button;
-
-        }
-        private void RegisterAddRegister_Edit(object sender, RoutedEventArgs e)
-        {
-            //если не показано меню для заполнения регистров
-            if (!RegisterShowed) return;
-            //добавление данных в список
-
-            string questionName = "";
-            int scale = RegisterChooseScale.SelectedIndex;
-            List<string> answersList = new List<string>();
-            foreach (UIElement el in RegisterCanvas.Children)
-            {
-                if (el.GetType().Name == "TextBox")
-                {
-                    TextBox tx = (TextBox)el;
-                    if (tx.Name == "RegisterQuestionText")
-                    {
-                        questionName = tx.Text;
-                        continue;
-                    }
-                    answersList.Add(tx.Text);
-                }
+                Grid.SetRow(button, questionNumber);
+                Grid.SetColumn(button, 1);
+                mainGrid.Children.Add(button);
+                LastAddRegisterButton = button;
             }
-
-            UsersRegister register = new UsersRegister(questionName, scale, answersList, questionNumber);
-            //сохранение в список
-            UsersRegisterList.Add(register);
-
-            questionNumber++;//+1 вопрос
-
-            //очистка интерфейса, изменение и добавление кнопок
-            RegisterShowed = false;
+            else
+            {//изменение регистра
+                UsersRegister register = new UsersRegister(questionName, scale, answersList, int.Parse(RegisterQuestionNumber.Content.ToString()));
+                //изменение списка
+                UsersRegisterList[int.Parse(RegisterQuestionNumber.Content.ToString()) - 1] = register;
+            }
+            //очистка интерфейса
+            RegisterNamesRectangle.Visibility = Visibility.Hidden;
 
             RegisterCanvas.Visibility = Visibility.Hidden;
             ResetRegisterRectangle();
 
-            LastAddRegisterButton.Content = "изменить";
-            LastAddRegisterButton.Click += AddRegisterButton_Edit;
-
-            mainGrid.RowDefinitions.Add(new RowDefinition { MinHeight = 30 });
-
-            Button button = new Button();
-            button.Tag = $"{questionNumber}";
-            button.Name = $"{AddRegisterButton1.Name}{questionNumber}";
-            button.Content = "+";
-            button.Margin = AddRegisterButton1.Margin;
-            button.Click += AddRegisterButton_Add;
-
-            Grid.SetRow(button, questionNumber);
-            Grid.SetColumn(button, 1);
-            mainGrid.Children.Add(button);
-            LastAddRegisterButton = button;
-
         }
-
         private void ResetRegisterRectangle()
         {
-            RegisterShowed = false;
+            RegisterNamesRectangle.Visibility = Visibility.Hidden;
             for (int i = 0; i < RegisterCanvas.Children.Count; i++)
             {
                 UIElement el = RegisterCanvas.Children[i];
@@ -329,53 +283,61 @@ namespace MegaMarketing2Reborn
             NamesAddButtonPlace = new Point(10, 225);
         }
 
-        private void AddRegisterButton_Add(object sender, RoutedEventArgs e)
-        {//по нажатию клавиши "+" слева в состоянии "добавить"
-            //изменения в интерфейсе
-            RegisterCanvas.Visibility = Visibility.Visible;
-            RegisterTopLabel.Content = "Добавление регистров";
-            RegisterAddRegister.Content = "Добавить регистр";
-            RegisterAddRegister.Click += RegisterAddRegister_Add;
-            RegisterQuestionNumber.Content = questionNumber;//изменение номера вопроса
-        }
+        private void AddRegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (((Button) sender).Content.Equals("изменить"))
+            {//по нажатию клавиши "+" слева в состоянии "изменить"
+                RegisterEditing = true;
 
-        private void AddRegisterButton_Edit(object sender, RoutedEventArgs e)
-        {//по нажатию клавиши "+" слева в состоянии "изменить"
+                ResetRegisterRectangle();
 
-            RegisterCanvas.Visibility = Visibility.Visible;
-            //изменения в интерфейсе
-            RegisterTopLabel.Content = "Изменение регистра";
-            RegisterAddRegister.Content = "Изменить регистр";
-            RegisterAddRegister.Click += RegisterAddRegister_Edit;
+                RegisterTopLabel.Content = "Изменение регистра";
+                RegisterAddRegister.Content = "Изменить регистр";
 
-            Button buttonSender = (Button)sender;
-            int registerNumber = int.Parse(buttonSender.Tag.ToString());
-            UsersRegister register = UsersRegisterList[registerNumber - 1];
-            RegisterQuestionText.Tag = register.Question;//изменение текста вопроса
-            RegisterQuestionNumber.Content = register.QuestionNumber;//изменение номера вопроса
+                Button buttonSender = (Button)sender;
+                int registerNumber = int.Parse(buttonSender.Tag.ToString());
+                UsersRegister register = UsersRegisterList[registerNumber - 1];
+                RegisterQuestionText.Tag = "Текст вопроса:";
+                TextBox tb = new TextBox();
+                RegisterQuestionText.FontStyle = tb.FontStyle;//TODO: wtf, но оно работает
+                RegisterQuestionText.Text = register.Question;//изменение текста вопроса
+                RegisterQuestionNumber.Content = register.QuestionNumber;//изменение номера вопроса
 
-            //заполнение полей ответов данными
-            RegisterChooseScale.SelectedIndex = register.Scale;
-            RegisterAddScaleButton_Click(null, null);
+                
+                RegisterChooseScale.SelectedIndex = register.Scale;
+                //RegisterAddScaleButton_Click(null, null);
 
-            ResetRegisterRectangle();
+                
 
-            RegisterNamesRectangle.Visibility = Visibility.Visible;
+                RegisterNamesRectangle.Visibility = Visibility.Visible;
 
-            for (int i = 1; i <= register.AnswersList.Count; i++)
-            {
-                AddTextboxToRegister($"Наименование {i}", register.AnswersList[i-1], NamesTextBoxesList, 10, 200 + 25 * i);
+                for (int i = 1; i <= register.AnswersList.Count; i++)
+                {
+                    AddTextboxToRegister($"Наименование {i}", register.AnswersList[i - 1], NamesTextBoxesList, 10, 200 + 25 * i);
+                }
+
+                NamesLastTextBoxIndex = register.AnswersList.Count;
+                //
+                RegistersName = new Label { Content = "Наименования:", FontSize = 14 };
+                Canvas.SetLeft(RegistersName, 8);
+                Canvas.SetTop(RegistersName, 192);
+                RegisterCanvas.Children.Add(RegistersName);
+            }
+            else
+            {//по нажатию клавиши "+" слева в состоянии "добавить"
+
+                ResetRegisterRectangle();
+                
+                RegisterEditing = false;
+                RegisterTopLabel.Content = "Добавление регистров";
+                RegisterAddRegister.Content = "Добавить регистр";
+                RegisterQuestionNumber.Content = questionNumber;//изменение номера вопроса
             }
 
-            NamesLastTextBoxIndex = register.AnswersList.Count;
-            //
-            RegistersName = new Label { Content = "Наименования:", FontSize = 14 };
-            Canvas.SetLeft(RegistersName, 8);
-            Canvas.SetTop(RegistersName, 192);
-            RegisterCanvas.Children.Add(RegistersName);
-            
-        }
+            RegisterCanvas.Visibility = Visibility.Visible;
 
+        }
+        
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             excel.Close();
