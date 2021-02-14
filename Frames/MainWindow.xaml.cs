@@ -36,7 +36,7 @@ namespace MegaMarketing2Reborn
             excel.CreateDoc();
 
             props = new Props();
-            
+
             InitializeComponent();
             RegisterChooseScale.SelectedIndex = 0;
             RegisterCanvas.Visibility = Visibility.Hidden;
@@ -47,8 +47,12 @@ namespace MegaMarketing2Reborn
 
         private void OpenTable(object sender, RoutedEventArgs e)
         {
-            TablePresent table2 = new TablePresent(excel);
-            this.Content = table2;
+            //отправка в excel. Если успешно, то открываем таблицу
+            if (excel.AddRegistersToExcel(UsersRegisterList))
+            {
+                TablePresent table2 = new TablePresent(excel);
+                this.Content = table2;
+            }
         }
         private void RegisterAddScaleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -192,7 +196,7 @@ namespace MegaMarketing2Reborn
             if (!RegisterShowed) return;
             //добавление данных в список
 
-            string questionName="";
+            string questionName = "";
             int scale = RegisterChooseScale.SelectedIndex;
             List<string> answersList = new List<string>();
             foreach (UIElement el in RegisterCanvas.Children)
@@ -212,34 +216,30 @@ namespace MegaMarketing2Reborn
 
             //сохранение в список
             UsersRegisterList.Add(register);
-            //отправка в excel. Если успешно, то закрываем лавочку
-            if (excel.AddRegister(register))
-            {
-                questionNumber++;//+1 вопрос
-                //очистка интерфейса
-                RegisterShowed = false;
 
-                RegisterCanvas.Visibility = Visibility.Hidden;
-                DeleteRegisterRectangle();
+            questionNumber++;//+1 вопрос
 
-                LastAddRegisterButton.Content = "изменить";
-                LastAddRegisterButton.Click += AddRegisterButton_Edit;
+            //очистка интерфейса, изменение и добавление кнопок
+            RegisterShowed = false;
 
-                Button button = new Button();
-                button.Tag = $"{questionNumber}";
-                button.Name = $"{AddRegisterButton.Name}{questionNumber}";
-                button.Content = "+";
-                button.Margin = AddRegisterButton.Margin;
-                button.Click += AddRegisterButton_Add;
+            RegisterCanvas.Visibility = Visibility.Hidden;
+            DeleteRegisterRectangle();
 
-                Grid.SetRow(button, questionNumber);
-                Grid.SetColumn(button,1);
-                mainGrid.Children.Add(button);
-                LastAddRegisterButton = button;
-            }
+            LastAddRegisterButton.Content = "изменить";
+            LastAddRegisterButton.Click += AddRegisterButton_Edit;
 
+            Button button = new Button();
+            button.Tag = $"{questionNumber}";
+            button.Name = $"{AddRegisterButton.Name}{questionNumber}";
+            button.Content = "+";
+            button.Margin = AddRegisterButton.Margin;
+            button.Click += AddRegisterButton_Add;
 
-
+            Grid.SetRow(button, questionNumber);
+            Grid.SetColumn(button, 1);
+            mainGrid.Children.Add(button);
+            LastAddRegisterButton = button;
+            
         }
 
         private void DeleteRegisterRectangle()
@@ -286,7 +286,6 @@ namespace MegaMarketing2Reborn
         private void AddRegisterButton_Add(object sender, RoutedEventArgs e)
         {
             RegisterCanvas.Visibility = Visibility.Visible;
-
         }
 
         private void AddRegisterButton_Edit(object sender, RoutedEventArgs e)
@@ -307,8 +306,6 @@ namespace MegaMarketing2Reborn
 
         private void ChooseExcelLocationButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //TODO: работает сохранение настроек в районах одного запуска
-            
             WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
             FBD.ShowNewFolderButton = true;
             FBD.Description = "Выберите путь файла Excel...";
@@ -320,7 +317,7 @@ namespace MegaMarketing2Reborn
 
             if (FBD.ShowDialog() == WinForms.DialogResult.OK)
             {
-                props.Fields.ExcelFilePath = FBD.SelectedPath;//.Replace("\\", "/");
+                props.Fields.ExcelFilePath = FBD.SelectedPath;
                 props.WriteXml();
                 excel.SetExcelFilePath(FBD.SelectedPath);
             }

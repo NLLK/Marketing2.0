@@ -25,9 +25,7 @@ namespace MegaMarketing2Reborn
 
         private string excelFileName = "excel.xlsx";
         //UI to Excel
-        private int lastRegisterIndex = 0;
         private string excelFilePath = new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
-        private int lastRegisterPlace = 1;
 
         private bool IfFileExist = true;
 
@@ -90,28 +88,28 @@ namespace MegaMarketing2Reborn
 
             for (int i = 0; i < dataGrid.Columns.Count; i++)
             {
-				int sum = 0;
-				for (int j = 0; j < dataGrid.Items.Count; j++)
+                int sum = 0;
+                for (int j = 0; j < dataGrid.Items.Count; j++)
                 {
-					string temp;
-					int temp2;
-					if (j != dataGrid.Items.Count - 1)
-					{
-						if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
-						(dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text.Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
-						else
-						{
-							worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
-							temp = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
-							//if (temp.Equals("")) temp2 = 0;
-							temp2 = int.Parse(temp);
-							if (temp2 == 1) sum++;
-						}	
-					}
-					else
-					{
-						worksheet.Cells[j + 2, i + 1].Value2 = sum;
-					}
+                    string temp;
+                    int temp2;
+                    if (j != dataGrid.Items.Count - 1)
+                    {
+                        if ((dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock) == null ||
+                        (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text.Equals("")) worksheet.Cells[j + 2, i + 1].Value2 = "0";
+                        else
+                        {
+                            worksheet.Cells[j + 2, i + 1].Value2 = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+                            temp = (dataGrid.Columns[i].GetCellContent(dataGrid.Items[j]) as TextBlock).Text;
+                            //if (temp.Equals("")) temp2 = 0;
+                            temp2 = int.Parse(temp);
+                            if (temp2 == 1) sum++;
+                        }
+                    }
+                    else
+                    {
+                        worksheet.Cells[j + 2, i + 1].Value2 = sum;
+                    }
                 }
             }
 
@@ -209,7 +207,7 @@ namespace MegaMarketing2Reborn
             excelFilePath = props.Fields.ExcelFilePath;
         }
 
-        public bool AddRegister(UsersRegister register)
+        public bool AddRegistersToExcel(List<UsersRegister> list)
         {
             //если файл существует, то перезаписать тот, что был, единожды
             if (File.Exists(excelFilePath + "\\" + excelFileName) && IfFileExist)
@@ -222,11 +220,11 @@ namespace MegaMarketing2Reborn
                 catch (System.Runtime.InteropServices.COMException e)
                 {
                     Console.WriteLine(e);
-                    
+
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
-                    
+
                     app = new _Excel.Application();
                     app.Visible = false;
                     app.DisplayAlerts = false;
@@ -238,28 +236,35 @@ namespace MegaMarketing2Reborn
                 }
             }
 
-            List<string> inputList = register.AnswersList;
-            int start = lastRegisterPlace;
+            int lastRegisterPlace = 1;
+            int lastRegisterIndex = 0;
 
-            if (register.Question.Equals("")) Write(1, start, $"{lastRegisterIndex + 1}");
-            else
+            foreach (UsersRegister register in list)
             {
-                Write(1, start, $"{lastRegisterIndex + 1}({register.Question})");
-            }
+                List<string> inputList = register.AnswersList;
+                int start = lastRegisterPlace;
 
-            int i = 1;
-            for (i = 1; i <= inputList.Count; i++)
-            {
-                if (inputList[i-1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
+                if (register.Question.Equals("")) Write(1, start, $"{lastRegisterIndex + 1}");
                 else
                 {
-                    Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
+                    Write(1, start, $"{lastRegisterIndex + 1}({register.Question})");
                 }
 
+                int i = 1;
+                for (i = 1; i <= inputList.Count; i++)
+                {
+                    if (inputList[i - 1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
+                    else
+                    {
+                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i]})");
+                    }
+
+                }
+
+                lastRegisterIndex++;
+                lastRegisterPlace = (start + i);
             }
 
-            lastRegisterIndex++;
-            lastRegisterPlace = (start + i);
 
             return Save();
         }
