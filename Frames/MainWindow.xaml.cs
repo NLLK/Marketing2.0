@@ -52,7 +52,13 @@ namespace MegaMarketing2Reborn
         private void OpenTable(object sender, RoutedEventArgs e)
         {
             //отправка в excel. Если успешно, то открываем таблицу
-            if (excel.AddRegistersToExcel(UsersRegisterList))
+            if (UsersRegisterList.Count == 0)
+            {
+                excel.OpenDoc();
+                TablePresent table2 = new TablePresent(excel);
+                this.Content = table2;
+            }
+            else if (excel.AddRegistersToExcel(UsersRegisterList))
             {
                 TablePresent table2 = new TablePresent(excel);
                 this.Content = table2;
@@ -303,12 +309,7 @@ namespace MegaMarketing2Reborn
                 RegisterQuestionText.Text = register.Question;//изменение текста вопроса
                 RegisterQuestionNumber.Content = register.QuestionNumber;//изменение номера вопроса
 
-                
                 RegisterChooseScale.SelectedIndex = register.Scale;
-                //RegisterAddScaleButton_Click(null, null);
-
-                
-
                 RegisterNamesRectangle.Visibility = Visibility.Visible;
 
                 for (int i = 1; i <= register.AnswersList.Count; i++)
