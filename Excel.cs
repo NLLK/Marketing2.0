@@ -75,7 +75,6 @@ namespace MegaMarketing2Reborn
 
         public void Write(DataGrid dataGrid)
         {
-
             worksheet = (_Excel.Worksheet)workbook.Sheets.get_Item(1);
             for (int j = 0; j < dataGrid.Columns.Count; j++)
             {

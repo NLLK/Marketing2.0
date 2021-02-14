@@ -11,12 +11,14 @@ namespace MegaMarketing2Reborn
         public string Question = "";
         public int Scale = 0;
         public List<string> AnswersList;
+        public int QuestionNumber = 0;
 
-        public UsersRegister(string question, int scale, List<string> answersList)
+        public UsersRegister(string question, int scale, List<string> answersList, int questionNumber )
         {
             this.Question = question;
             this.Scale = scale;
             this.AnswersList = answersList;
+            this.QuestionNumber = questionNumber;
         }
     }
 }
