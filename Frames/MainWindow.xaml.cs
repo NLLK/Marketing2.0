@@ -21,7 +21,7 @@ namespace MegaMarketing2Reborn
         private List<UIElement> NamesTextBoxesList = new List<UIElement>();
 
         private Label RegistersName;//название регистра
-        string questionnaireName;//название анкеты
+        //string questionnaireName;//название анкеты
         private int questionNumber = 1;//номер последнего вопроса
         private bool RegisterEditing = false;
 
@@ -192,7 +192,8 @@ namespace MegaMarketing2Reborn
             //добавление данных из формы
             string questionName = "";
             int scale = RegisterChooseScale.SelectedIndex;
-            List<string> answersList = new List<string>();
+            List<RegisterQuestion> answers = new List<RegisterQuestion>();
+            int iterator = 0;
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
@@ -203,13 +204,16 @@ namespace MegaMarketing2Reborn
                         questionName = tx.Text;
                         continue;
                     }
-                    answersList.Add(tx.Text);
+                    RegisterQuestion register = new RegisterQuestion(tx.Text, -1, null, iterator, 0);
+                    iterator++;
+                    answers.Add(register);
                 }
+
             }
 
             if (!RegisterEditing)
             {//добавление регистра
-                RegisterQuestion register = new RegisterQuestion(questionName, scale, answersList, questionNumber);
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumber,0);
                 //сохранение в список
                 UsersRegisterList.Add(register);
 
@@ -235,9 +239,11 @@ namespace MegaMarketing2Reborn
             }
             else
             {//изменение регистра
-                RegisterQuestion register = new RegisterQuestion(questionName, scale, answersList, int.Parse(RegisterQuestionNumber.Content.ToString()));
+                int questionNumberFromLabel = int.Parse(RegisterQuestionNumber.Content.ToString());
+
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumberFromLabel, 0);
                 //изменение списка
-                UsersRegisterList[int.Parse(RegisterQuestionNumber.Content.ToString()) - 1] = register;
+                UsersRegisterList[questionNumberFromLabel - 1] = register;
             }
             //очистка интерфейса
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
@@ -312,12 +318,12 @@ namespace MegaMarketing2Reborn
                 RegisterChooseScale.SelectedIndex = register.Scale;
                 RegisterNamesRectangle.Visibility = Visibility.Visible;
 
-                for (int i = 1; i <= register.AnswersList.Count; i++)
+                for (int i = 1; i <= register.Answers.Count; i++)
                 {
-                    AddTextboxToRegister($"Наименование {i}", register.AnswersList[i - 1], NamesTextBoxesList, 10, 200 + 25 * i);
+                    AddTextboxToRegister($"Наименование {i}", register.Answers[i - 1].Question, NamesTextBoxesList, 10, 200 + 25 * i);
                 }
 
-                NamesLastTextBoxIndex = register.AnswersList.Count;
+                NamesLastTextBoxIndex = register.Answers.Count;
                 //
                 RegistersName = new Label { Content = "Наименования:", FontSize = 14 };
                 Canvas.SetLeft(RegistersName, 8);
