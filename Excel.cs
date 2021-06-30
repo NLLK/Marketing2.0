@@ -27,7 +27,7 @@ namespace MegaMarketing2Reborn
 
         //UI to Excel
         private string excelFilePath =
-            new Uri(Directory.GetCurrentDirectory() + "/excel.xlsx", UriKind.RelativeOrAbsolute).ToString();
+            new Uri(Directory.GetCurrentDirectory()/* + "/excel.xlsx"*/, UriKind.RelativeOrAbsolute).ToString();
 
         private bool IfFileExist = true;
 
@@ -204,17 +204,17 @@ namespace MegaMarketing2Reborn
         private void UpdateExcelFilePath()
         {
             Props props = new Props();
-            props.ReadXml();
+            //props.ReadXml();
             excelFilePath = props.Fields.ExcelFilePath;
         }
 
-        public bool AddRegistersToExcel(List<UsersRegister> list)
+        public bool AddRegistersToExcel(List<RegisterQuestion> list)
         {
 
             int lastRegisterPlace = 1;
             int lastRegisterIndex = 0;
 
-            foreach (UsersRegister register in list)
+            foreach (RegisterQuestion register in list)
             {
                 List<string> inputList = register.AnswersList;
                 int start = lastRegisterPlace;
@@ -282,7 +282,7 @@ namespace MegaMarketing2Reborn
 
         public string GetFullExcelFilePath()
         {
-            return excelFilePath + "\\" + excelFileName;
+            return excelFilePath + excelFileName;
         }
     }
 }
