@@ -216,7 +216,7 @@ namespace MegaMarketing2Reborn
 
             foreach (RegisterQuestion register in list)
             {
-                List<string> inputList = register.AnswersList;
+                List<RegisterQuestion> inputList = register.Answers;
                 int start = lastRegisterPlace;
 
                 if (register.Question.Equals("")) Write(1, start, $"{lastRegisterIndex + 1}");
@@ -228,10 +228,10 @@ namespace MegaMarketing2Reborn
                 int i = 1;
                 for (i = 1; i <= inputList.Count; i++)
                 {
-                    if (inputList[i - 1].Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
+                    if (inputList[i - 1].Question.Equals("")) Write(1, start + i, $"'{lastRegisterIndex + 1}\x2024{i}");
                     else
                     {
-                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i - 1]})");
+                        Write(1, start + i, $"{lastRegisterIndex + 1}\x2024{i}({inputList[i - 1].Question})");
                     }
 
                 }
