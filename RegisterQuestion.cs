@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MegaMarketing2Reborn
 {
-    public class UsersRegister
+    public class RegisterQuestion
     {
         public string Question = "";
         public int Scale = 0;
-        public List<string> AnswersList;
+        public List<string> AnswersList = new List<string>(){ "Да", "Нет" };
         public int QuestionNumber = 0;
 
-        public UsersRegister(string question, int scale, List<string> answersList, int questionNumber )
+        public RegisterQuestion(string question, int scale, List<string> answersList, int questionNumber)
         {
             this.Question = question;
             this.Scale = scale;

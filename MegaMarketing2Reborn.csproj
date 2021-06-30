@@ -63,7 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="SettingsSetup\SettingsSetup.cs" />
-    <Compile Include="UsersRegister.cs" />
+    <Compile Include="RegisterQuestion.cs" />
     <Page Include="Frames\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

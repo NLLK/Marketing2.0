@@ -27,7 +27,7 @@ namespace MegaMarketing2Reborn
 
         private Button LastAddRegisterButton;//последняя кнопка "добавить регистр" слева, которая будет отображаться плюсиком
 
-        private List<UsersRegister> UsersRegisterList = new List<UsersRegister>();
+        private List<RegisterQuestion> UsersRegisterList = new List<RegisterQuestion>();
 
         private Props props;
         private Excel excel;
@@ -209,7 +209,7 @@ namespace MegaMarketing2Reborn
 
             if (!RegisterEditing)
             {//добавление регистра
-                UsersRegister register = new UsersRegister(questionName, scale, answersList, questionNumber);
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answersList, questionNumber);
                 //сохранение в список
                 UsersRegisterList.Add(register);
 
@@ -235,7 +235,7 @@ namespace MegaMarketing2Reborn
             }
             else
             {//изменение регистра
-                UsersRegister register = new UsersRegister(questionName, scale, answersList, int.Parse(RegisterQuestionNumber.Content.ToString()));
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answersList, int.Parse(RegisterQuestionNumber.Content.ToString()));
                 //изменение списка
                 UsersRegisterList[int.Parse(RegisterQuestionNumber.Content.ToString()) - 1] = register;
             }
@@ -302,7 +302,7 @@ namespace MegaMarketing2Reborn
 
                 Button buttonSender = (Button)sender;
                 int registerNumber = int.Parse(buttonSender.Tag.ToString());
-                UsersRegister register = UsersRegisterList[registerNumber - 1];
+                RegisterQuestion register = UsersRegisterList[registerNumber - 1];
                 RegisterQuestionText.Tag = "Текст вопроса:";
                 TextBox tb = new TextBox();
                 RegisterQuestionText.FontStyle = tb.FontStyle;//TODO: wtf, но оно работает
