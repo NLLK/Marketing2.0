@@ -62,8 +62,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\RegisterAnswer.cs" />
+    <Compile Include="Models\RegisterQuestionnaire.cs" />
     <Compile Include="SettingsSetup\SettingsSetup.cs" />
-    <Compile Include="RegisterQuestion.cs" />
+    <Compile Include="Models\RegisterQuestion.cs" />
     <Page Include="Frames\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

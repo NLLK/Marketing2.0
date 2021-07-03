@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MegaMarketing2Reborn
+namespace MegaMarketing2Reborn.Models
 {
     public class RegisterQuestion
     {
