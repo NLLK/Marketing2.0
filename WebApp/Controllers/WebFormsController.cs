@@ -1,14 +1,15 @@
-﻿using System;
+﻿using MegaMarketing2Reborn.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-
 namespace WebApp.Controllers
 {
     public class WebFormsController : ApiController
     {
+
         // GET: api/WebForms
         public IEnumerable<string> Get()
         {
@@ -22,8 +23,9 @@ namespace WebApp.Controllers
         }
 
         // POST: api/WebForms
-        public void Post([FromBody]string value)
+        public void Post(List<RegisterQuestion> questions)
         {
+
         }
 
         // PUT: api/WebForms/5
