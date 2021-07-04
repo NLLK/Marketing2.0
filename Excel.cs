@@ -12,6 +12,7 @@ using System.IO;
 using System.Windows.Forms;
 using MegaMarketing2Reborn.SettingsSetup;
 using DataGrid = System.Windows.Controls.DataGrid;
+using MegaMarketing2Reborn.Models;
 
 namespace MegaMarketing2Reborn
 {
@@ -164,11 +165,15 @@ namespace MegaMarketing2Reborn
 
         public void Close()
         {
-            workbook.Close();
-            app.Quit();
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
+            if (app != null)
+            {
+                if (workbook != null)
+                    workbook.Close();
+                app.Quit();
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(app);
+            }
         }
 
         public void WriteFormula(int i, int j, string text)

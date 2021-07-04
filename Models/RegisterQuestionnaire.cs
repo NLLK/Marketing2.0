@@ -10,7 +10,7 @@ namespace MegaMarketing2Reborn.Models
     {
         private string PersonnelInfo = "";
         private string Note = "";
-
+        private List<RegisterAnswer> AnswersList = new List<RegisterAnswer>();
         public void setPersonnelInfo(string _id, string _name)
         {
             if (_id.Equals(""))
@@ -31,6 +31,14 @@ namespace MegaMarketing2Reborn.Models
         public void setNote(string _note)
         {
             this.Note = _note;
+        }
+        public List<RegisterAnswer> getAnswersList()
+        {
+            return this.AnswersList;
+        }
+        public void setAnswersList(List<RegisterAnswer> answers)
+        {
+            this.AnswersList = answers;
         }
     }
 }

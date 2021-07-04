@@ -1,4 +1,5 @@
 ﻿using MegaMarketing2Reborn.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,33 +10,19 @@ namespace WebApp.Controllers
 {
     public class WebFormsController : ApiController
     {
-
-        // GET: api/WebForms
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/WebForms/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
+        private List<RegisterQuestion> QuestionsList = new List<RegisterQuestion>();
         // POST: api/WebForms
-        public void Post(List<RegisterQuestion> questions)
+        public string PostQuestions(List<RegisterQuestion> questions)
         {
-
+            QuestionsList = questions;
+            return "OK";
+        } 
+        public string GetQuestions()
+        {
+            string json = JsonConvert.SerializeObject(QuestionsList);
+            return json;
+            //QuestionsList = questions;
         }
 
-        // PUT: api/WebForms/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/WebForms/5
-        public void Delete(int id)
-        {
-        }
     }
 }

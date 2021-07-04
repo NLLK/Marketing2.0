@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MegaMarketing2Reborn"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" Closing="OnClosing"
+        Title="MainWindow" Height="720" Width="1280" Closing="OnClosing" MinHeight="720" MinWidth="1280"
         >
     <Grid>
-        <Frame x:Name="ConstructorFrame" HorizontalAlignment="Left" VerticalAlignment="Top"  NavigationUIVisibility="Hidden" Panel.ZIndex="5" Height="664" Width="1283" Margin="10,25,-21,0" />
+        <Frame x:Name="ConstructorFrame" HorizontalAlignment="Left" VerticalAlignment="Top"  NavigationUIVisibility="Hidden" Panel.ZIndex="5" Height="664" Width="1262" Margin="10,25,0,0" />
         <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="8" d:IsLocked="True" Grid.RowSpan="2">
             <MenuItem Header="Конструктор">
                 <MenuItem Header="Выбрать путь" Name="ChooseExcelLocationButton" Click="ChooseExcelLocationButton_OnClick"/>
@@ -18,7 +18,7 @@
         <ScrollViewer Margin="2,25,310,0" Width="960">
             <StackPanel>
                 <Label x:Name="questionnaireNameLabel" Content="Имя анкеты: " Grid.Row="0" Grid.Column="0" Margin="0,-1,0,1"/>
-
+                <Button x:Name="OpenWebButton" Content="Открыть форму в браузере" Width="180" HorizontalAlignment="Right" Margin="0,0,10,0" Click="OpenWebButton_Click" />
                 <Grid x:Name="mainGrid" Margin="0,0,0,0">
 
                     <Grid.ColumnDefinitions>
