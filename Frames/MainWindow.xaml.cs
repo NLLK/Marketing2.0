@@ -6,6 +6,8 @@ using WinForms = System.Windows.Forms;
 using System.Windows.Controls;
 using MegaMarketing2Reborn.Frames;
 using MegaMarketing2Reborn.SettingsSetup;
+using MegaMarketing2Reborn.Models;
+using System.Net;
 
 namespace MegaMarketing2Reborn
 {
@@ -27,15 +29,17 @@ namespace MegaMarketing2Reborn
 
         private Button LastAddRegisterButton;//последняя кнопка "добавить регистр" слева, которая будет отображаться плюсиком
 
-        private List<RegisterQuestion> UsersRegisterList = new List<RegisterQuestion>();
+        private List<RegisterQuestion> RegisterList = new List<RegisterQuestion>();
 
         private Props props;
         private Excel excel;
         public MainWindow()
-        {
+        { 
+            //TODO: переместить создание документа в другое место
             //создание excel документа и класса
             excel = new Excel();
-            excel.CreateDoc();
+            //excel.CreateDoc();
+
             //создание файла с настройками и чтение из него
             props = new Props();
 
@@ -52,13 +56,13 @@ namespace MegaMarketing2Reborn
         private void OpenTable(object sender, RoutedEventArgs e)
         {
             //отправка в excel. Если успешно, то открываем таблицу
-            if (UsersRegisterList.Count == 0)
+            if (RegisterList.Count == 0)
             {
                 excel.OpenDoc();
                 TablePresent table2 = new TablePresent(excel);
                 this.Content = table2;
             }
-            else if (excel.AddRegistersToExcel(UsersRegisterList))
+            else if (excel.AddRegistersToExcel(RegisterList))
             {
                 TablePresent table2 = new TablePresent(excel);
                 this.Content = table2;
@@ -215,7 +219,7 @@ namespace MegaMarketing2Reborn
             {//добавление регистра
                 RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumber,0);
                 //сохранение в список
-                UsersRegisterList.Add(register);
+                RegisterList.Add(register);
 
                 questionNumber++;//+1 вопрос
 
@@ -243,7 +247,7 @@ namespace MegaMarketing2Reborn
 
                 RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumberFromLabel, 0);
                 //изменение списка
-                UsersRegisterList[questionNumberFromLabel - 1] = register;
+                RegisterList[questionNumberFromLabel - 1] = register;
             }
             //очистка интерфейса
             RegisterNamesRectangle.Visibility = Visibility.Hidden;
@@ -308,7 +312,7 @@ namespace MegaMarketing2Reborn
 
                 Button buttonSender = (Button)sender;
                 int registerNumber = int.Parse(buttonSender.Tag.ToString());
-                RegisterQuestion register = UsersRegisterList[registerNumber - 1];
+                RegisterQuestion register = RegisterList[registerNumber - 1];
                 RegisterQuestionText.Tag = "Текст вопроса:";
                 TextBox tb = new TextBox();
                 RegisterQuestionText.FontStyle = tb.FontStyle;//TODO: wtf, но оно работает
@@ -374,6 +378,11 @@ namespace MegaMarketing2Reborn
             }
 
 
+        }
+        private void OpenWebButton_Click(object sender, RoutedEventArgs e)
+        {
+            WebWorking webWorking = new WebWorking();
+            var temp = webWorking.PostQuestionListToAPIAsync(RegisterList);
         }
     }
 }

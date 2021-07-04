@@ -8,8 +8,8 @@ namespace MegaMarketing2Reborn.Models
 {
     class RegisterAnswer
     {
-        string QuestionNumber;
-        string Value;
+        public string QuestionNumber;
+        public string Value;
         public RegisterAnswer(string _number, string _value)
         {
             this.QuestionNumber = _number;
