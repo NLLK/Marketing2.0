@@ -19,32 +19,28 @@ namespace MegaMarketing2Reborn.Frames
         public WebHtmlPage()
         {
             InitializeComponent();
-            webBrowser = App.chromeBrowser;
-            string mainDirectory = Environment.CurrentDirectory;
-            String path = string.Format(@"{0}\Resources\Web\index.html", mainDirectory);
-
-            //string path = @"C:\SomeDir\hta.txt";
-
-            string html = "";
-
-            using (StreamReader sr = new StreamReader(path, System.Text.Encoding.UTF8))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    html += line;
-                }
-            }
-
-            webBrowser.LoadHtml(html);
-
-            //Uri uri = new Uri("/index.html", UriKind.Relative);
-            //Stream source = Application.GetContentStream(uri).Stream;
-            //Stream source = File.OpenRead();
-
-            /*Uri uri = new Uri(String.Format("file:///{0}/{1}", mainDirectory, "Resources/Web/index.html"));
-            webBrowser.Source = uri;*/
         }
+        private void webBrowser_IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (webBrowser.IsBrowserInitialized == true)
+            {
+                string mainDirectory = Environment.CurrentDirectory;
+                /*                String path = string.Format(@"{0}\Resources\Web\index.html", mainDirectory);
+                                string html = "";
 
+                                using (StreamReader sr = new StreamReader(path, System.Text.Encoding.UTF8))
+                                {
+                                    string line;
+                                    while ((line = sr.ReadLine()) != null)
+                                    {
+                                        html += line;
+                                    }
+                                }
+                */
+                string path = string.Format(@"file:///{0}/Resources/Web/index.html", mainDirectory.Replace("\\","/"));
+
+                webBrowser.Load(path);
+            }
+        }
     }
 }
