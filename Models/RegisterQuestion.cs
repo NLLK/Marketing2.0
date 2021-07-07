@@ -14,8 +14,7 @@ namespace MegaMarketing2Reborn.Models
         public List<RegisterQuestion> Answers { get; set; }//Ответы на вопрос
         public int QuestionNumber { get; set; }//номер вопроса (относительно анкеты или потомков)
         public int NextQuestionIfYes { get; set; }//если в качестве ответа был выбран этот вопрос, то перейти к другому пункту
-                                         //0 - без принудительной переадресации
-
+                                         //0 - без принудительной 
         public RegisterQuestion(string question, int scale, List<RegisterQuestion> answers, int questionNumber, int nextQuestionIfYes)
         {
             Question = question;
