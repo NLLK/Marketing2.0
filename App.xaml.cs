@@ -16,7 +16,6 @@ namespace MegaMarketing2Reborn
     /// </summary>
     public partial class App : Application
     {
-        public static ChromiumWebBrowser chromeBrowser;
         public App()
         {
 #if ANYCPU
@@ -47,21 +46,8 @@ namespace MegaMarketing2Reborn
             if (!Cef.IsInitialized)
             {
                 //Perform dependency check to make sure all relevant resources are in our output directory.
-                Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
+                Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
             }
-
-            chromeBrowser = new ChromiumWebBrowser("google.com");
-
-        }
-        public void InitializeChromium()
-        {
-            CefSettings settings = new CefSettings();
-            // Initialize cef with the provided settings
-            Cef.Initialize(settings);
-            // Create a browser component
-            chromeBrowser = new ChromiumWebBrowser();
-
-            // Add it to the form and fill it to the form window.
         }
     }
 }

@@ -17,16 +17,7 @@ namespace MegaMarketing2Reborn
         //TODO: rename
         public WebWorking()
         {
-            client = new HttpClient();
-
-            client.BaseAddress = new Uri(APP_PATH);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<string> PostQuestionListToAPIAsync(List<RegisterQuestion> questions)
-        {
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/WebForms/PostQuestions", questions);
-            return "Posted";
-        }
     }
 }
