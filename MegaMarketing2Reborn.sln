@@ -5,22 +5,22 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MegaMarketing2Reborn", "MegaMarketing2Reborn.csproj", "{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{EB38244D-8C55-4C7E-844F-62195C0F829F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Debug|x64.ActiveCfg = Debug|x64
+		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Debug|x64.Build.0 = Debug|x64
 		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB38244D-8C55-4C7E-844F-62195C0F829F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB38244D-8C55-4C7E-844F-62195C0F829F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB38244D-8C55-4C7E-844F-62195C0F829F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB38244D-8C55-4C7E-844F-62195C0F829F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Release|x64.ActiveCfg = Release|x64
+		{0B9BD21E-B3B1-4BA6-83DA-C224890E1375}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

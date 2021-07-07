@@ -381,8 +381,10 @@ namespace MegaMarketing2Reborn
         }
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
-            WebWorking webWorking = new WebWorking();
-            var temp = webWorking.PostQuestionListToAPIAsync(RegisterList);
+            WebHtmlPage page = new WebHtmlPage();
+            this.Content = page;
+           // WebWorking webWorking = new WebWorking();
+            //var temp = webWorking.PostQuestionListToAPIAsync(RegisterList);
         }
     }
 }
