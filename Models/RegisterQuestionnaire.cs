@@ -14,7 +14,6 @@ namespace MegaMarketing2Reborn.Models
         private string QuestionnaireName { get; set; }
         private List<RegisterQuestion> AnswersList { get; set; }
 
-
         public void setPersonnelInfo(string _id, string _name)
         {
             if (_id.Equals(""))
