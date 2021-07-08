@@ -13,7 +13,9 @@
         <Label Content="Табельный номер" HorizontalAlignment="Left" Margin="123,50,0,0" VerticalAlignment="Top" Width="300" Height="27"/>
         <Label Content="ФИО" HorizontalAlignment="Left" Margin="123,130,0,0" VerticalAlignment="Top" Width="300" Height="27"/>
         <Label Content="Название анкеты" HorizontalAlignment="Left" Margin="123,210,0,0" VerticalAlignment="Top" Width="300" Height="27"/>
+        <Button Content="Выбрать путь excel файла" HorizontalAlignment="Left" Margin="123,280,0,0" VerticalAlignment="Top" Width="175" Click="ChooseExcelLocation"/>
         <Button Content="Сохранить" HorizontalAlignment="Left" Margin="123,350,0,0" VerticalAlignment="Top" Width="75" Click="SaveSettings"/>
+        <Button Content="Назад" HorizontalAlignment="Left" Margin="623,350,0,0" VerticalAlignment="Top" Width="75" Click="QuitPage"/>
 
     </Grid>
 </Page>

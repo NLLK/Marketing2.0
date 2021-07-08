@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using WinForms = System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -18,9 +19,12 @@ namespace MegaMarketing2Reborn.Frames
 {
 	public partial class Settings : Page
 	{
+		private Excel excel;
 		private Props props;
-		public Settings(Props props)
+
+		public Settings(Excel excel, Props props)
 		{
+			this.excel = excel;
 			this.props = props;
 			InitializeComponent();
 		}
@@ -37,6 +41,30 @@ namespace MegaMarketing2Reborn.Frames
 			String formName = formNameTextBox.Text;
 
 			props.ChangeFields(personnelNumber, FIO, formName);
+		}
+
+		public void QuitPage(object sender, RoutedEventArgs e)
+		{
+			NavigationService.GoBack();
+		}
+
+		public void ChooseExcelLocation(object sender, RoutedEventArgs e)
+		{
+			WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
+			FBD.ShowNewFolderButton = true;
+			FBD.Description = "Выберите путь файла Excel...";
+			props.ReadXml();
+			if (props.Fields.ExcelFilePath != Environment.CurrentDirectory)
+			{
+				FBD.SelectedPath = props.Fields.ExcelFilePath;
+			}
+
+			if (FBD.ShowDialog() == WinForms.DialogResult.OK)
+			{
+				props.Fields.ExcelFilePath = FBD.SelectedPath;
+				props.WriteXml();
+				excel.SetExcelFilePath(FBD.SelectedPath);
+			}
 		}
 	}
 }
