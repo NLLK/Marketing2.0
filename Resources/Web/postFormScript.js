@@ -22,4 +22,4 @@ function postForm()
     window.location.href = '#questionnaireName'
 
     CefSharp.PostMessage(JSON.stringify(answers))    
-}
+} 
