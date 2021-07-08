@@ -12,7 +12,8 @@
         <ScrollViewer Margin="2,25,310,0" Width="960">
             <StackPanel>
                 <Label x:Name="questionnaireNameLabel" Content="Имя анкеты: " Grid.Row="0" Grid.Column="0" Margin="0,-1,0,1"/>
-                <Button x:Name="OpenWebButton" Content="Открыть форму в браузере" Width="180" HorizontalAlignment="Right" Margin="0,0,10,0" Click="OpenWebButton_Click" />
+                <Button x:Name="SaveForm" Content="Сохранить форму" Width="180" HorizontalAlignment="Right" Margin="0,0,10,0" Click="SaveForm_Click" />
+                <Button x:Name="OpenWebButton" Content="Открыть форму в браузере" Width="180" HorizontalAlignment="Right" Margin="0,5,10,0" Click="OpenWebButton_Click" />
                 <Grid x:Name="mainGrid" Margin="0,0,0,0">
 
                     <Grid.ColumnDefinitions>

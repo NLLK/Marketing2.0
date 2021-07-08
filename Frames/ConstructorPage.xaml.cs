@@ -350,6 +350,11 @@ namespace MegaMarketing2Reborn.Frames
         {
             ResetRegisterRectangle();
         }
+
+        private void SaveForm_Click(object sender, RoutedEventArgs e)
+		{
+            props.WriteFormXML(RegisterList);
+		}
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
             /*WebHtmlPage page = new WebHtmlPage();

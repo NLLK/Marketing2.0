@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MegaMarketing2Reborn.Models;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -73,6 +74,12 @@ namespace MegaMarketing2Reborn.SettingsSetup
             {
                 //можно написать вывод сообщения если файла не существует
             }
+        }
+
+        public void WriteFormXML(List<RegisterQuestion> RegisterList)
+		{
+            XmlSerializer ser = new XmlSerializer(typeof(RegisterQuestion));
+
         }
     }
 }
