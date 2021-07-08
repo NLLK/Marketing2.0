@@ -9,9 +9,6 @@
         >
     <Grid>
         <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="8" d:IsLocked="True" Grid.RowSpan="2">
-            <MenuItem Header="Конструктор">
-                <MenuItem Header="Выбрать путь" Name="ChooseExcelLocationButton" Click="ChooseExcelLocationButton_OnClick"/>
-            </MenuItem>
             <!--<MenuItem Header="Таблица" Click="OpenTable"/>-->
             <MenuItem Header="Настройки" Click="OpenSettingsButton_Click"/>
         </Menu>

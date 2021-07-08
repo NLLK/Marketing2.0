@@ -38,27 +38,10 @@ namespace MegaMarketing2Reborn
         {
             excel.Close();
         }
-        private void ChooseExcelLocationButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            WinForms.FolderBrowserDialog FBD = new WinForms.FolderBrowserDialog();
-            FBD.ShowNewFolderButton = true;
-            FBD.Description = "Выберите путь файла Excel...";
-            props.ReadXml();
-            if (props.Fields.ExcelFilePath != Environment.CurrentDirectory)
-            {
-                FBD.SelectedPath = props.Fields.ExcelFilePath;
-            }
 
-            if (FBD.ShowDialog() == WinForms.DialogResult.OK)
-            {
-                props.Fields.ExcelFilePath = FBD.SelectedPath;
-                props.WriteXml();
-                excel.SetExcelFilePath(FBD.SelectedPath);
-            }
-        }
         private void OpenSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            ConstructorFrame.Navigate(new Settings(props));
+            ConstructorFrame.Navigate(new Settings(excel, props));
         }
 
     }
