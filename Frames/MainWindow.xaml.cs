@@ -381,10 +381,12 @@ namespace MegaMarketing2Reborn
         }
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
-            WebHtmlPage page = new WebHtmlPage();
-            this.Content = page;
-           // WebWorking webWorking = new WebWorking();
-            //var temp = webWorking.PostQuestionListToAPIAsync(RegisterList);
+            /*WebHtmlPage page = new WebHtmlPage();
+            this.Content = page;*/
+            string questionnaireName = "Имя Анкеты";
+            string recordId= "712";
+            WebHtmlWindow window = new WebHtmlWindow(questionnaireName, recordId);
+            window.Show();
         }
     }
 }

@@ -1,7 +1,7 @@
-window.onload = function(){
+window.onload = function () {
     var questionnaire = [{ "Question": "Вопрос 1", "Scale": 0, "Answers": [{ "Question": "ответ 1", "Scale": -1, "Answers": null, "QuestionNumber": 0, "NextQuestionIfYes": 0 }, { "Question": "ответ 2", "Scale": -1, "Answers": null, "QuestionNumber": 1, "NextQuestionIfYes": 0 }], "QuestionNumber": 1, "NextQuestionIfYes": 0 }, { "Question": "Вопрос 2", "Scale": 0, "Answers": [{ "Question": "ответ 1", "Scale": -1, "Answers": null, "QuestionNumber": 0, "NextQuestionIfYes": 0 }, { "Question": "ответ 2", "Scale": -1, "Answers": null, "QuestionNumber": 1, "NextQuestionIfYes": 0 }], "QuestionNumber": 2, "NextQuestionIfYes": 0 }]
     var mainNode = document.getElementById("test")
-    questionnaire.forEach(question=>{
+    questionnaire.forEach(question => {
         let questionDiv = document.createElement('div')
         questionDiv.id = "question" + question.QuestionNumber
         mainNode.append(questionDiv)
@@ -30,6 +30,7 @@ window.onload = function(){
             let br = document.createElement('br')
             answersDiv.append(br)
         });
+        CefSharp.PostMessage("windowLoaded")
 
     });
 }

@@ -99,12 +99,14 @@
     <Compile Include="Frames\WebHtmlPage.xaml.cs">
       <DependentUpon>WebHtmlPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Frames\WebHtmlWindow.xaml.cs">
+      <DependentUpon>WebHtmlWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\RegisterAnswer.cs" />
     <Compile Include="Models\RegisterQuestionnaire.cs" />
     <Compile Include="SettingsSetup\SettingsSetup.cs" />
     <Compile Include="Models\RegisterQuestion.cs" />
-    <Compile Include="Source\htmlBuilder.cs" />
-    <Compile Include="Source\WebWorking.cs" />
+    <Compile Include="Source\JsScriptBuilder.cs" />
     <Page Include="Frames\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,6 +125,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Frames\WebHtmlPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Frames\WebHtmlWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -207,6 +213,9 @@
     <Folder Include="Resources\WPF\" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="Resources\Web\formsScript.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <Content Include="Resources\Web\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -225,10 +234,12 @@
     <AdditionalFiles Include="Resources\Web\assets\css\styles.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
-    <AdditionalFiles Include="Resources\Web\formsScript.js">
+    <AdditionalFiles Include="Resources\Web\postFormScript.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
-    <Content Include="Resources\Web\main.html" />
+    <AdditionalFiles Include="Resources\Web\setFieldsScript.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="Resources\Web\assets\bootstrap\js\bootstrap.bundle.min.js">
