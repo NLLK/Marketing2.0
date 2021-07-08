@@ -16,6 +16,7 @@
                                      IsBrowserInitializedChanged="webBrowser_IsBrowserInitializedChanged"
                                      FrameLoadEnd="webBrowser_FrameLoadEnd"
                                      JavascriptMessageReceived="webBrowser_JavascriptMessageReceived"
+                                     
                                      />
         </Border>
         <!--<StatusBar Grid.Row="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >

@@ -194,7 +194,7 @@ namespace MegaMarketing2Reborn.Frames
             string questionName = "";
             int scale = RegisterChooseScale.SelectedIndex;
             List<RegisterQuestion> answers = new List<RegisterQuestion>();
-            int iterator = 0;
+            int iterator = 1;
             foreach (UIElement el in RegisterCanvas.Children)
             {
                 if (el.GetType().Name == "TextBox")
@@ -205,7 +205,7 @@ namespace MegaMarketing2Reborn.Frames
                         questionName = tx.Text;
                         continue;
                     }
-                    RegisterQuestion register = new RegisterQuestion(tx.Text, -1, null, iterator, 0);
+                    RegisterQuestion register = new RegisterQuestion(tx.Text, -1, null, iterator.ToString(), 0);
                     iterator++;
                     answers.Add(register);
                 }
@@ -214,7 +214,7 @@ namespace MegaMarketing2Reborn.Frames
 
             if (!RegisterEditing)
             {//добавление регистра
-                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumber, 0);
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumber.ToString(), 0);
                 //сохранение в список
                 RegisterList.Add(register);
 
@@ -242,7 +242,7 @@ namespace MegaMarketing2Reborn.Frames
             {//изменение регистра
                 int questionNumberFromLabel = int.Parse(RegisterQuestionNumber.Content.ToString());
 
-                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumberFromLabel, 0);
+                RegisterQuestion register = new RegisterQuestion(questionName, scale, answers, questionNumberFromLabel.ToString(), 0);
                 //изменение списка
                 RegisterList[questionNumberFromLabel - 1] = register;
             }
@@ -357,12 +357,16 @@ namespace MegaMarketing2Reborn.Frames
 		}
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
-            /*WebHtmlPage page = new WebHtmlPage();
-            this.Content = page;*/
-            excel.Save();
-            string questionnaireName = "Имя Анкеты";
-            string recordId = "712";
-            WebHtmlWindow window = new WebHtmlWindow(questionnaireName, recordId);
+            excel.AddRegistersToExcel(RegisterList);
+            //получить последнюю запись
+            string recordId = "1";
+
+            RegisterQuestionnaire registerQuestionnaire = new RegisterQuestionnaire();
+            registerQuestionnaire.setAnswersList(RegisterList);
+            registerQuestionnaire.setPersonnelInfo(props.XMLFields.personnelNumber, props.XMLFields.FIO);
+            registerQuestionnaire.setQuestionnaireName(props.XMLFields.formName);
+
+            WebHtmlWindow window = new WebHtmlWindow(recordId, registerQuestionnaire, excel);
             window.Show();
         }
     }

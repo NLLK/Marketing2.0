@@ -1,5 +1,4 @@
-window.onload = function () {
-    var questionnaire = [{ "Question": "Вопрос 1", "Scale": 0, "Answers": [{ "Question": "ответ 1", "Scale": -1, "Answers": null, "QuestionNumber": 0, "NextQuestionIfYes": 0 }, { "Question": "ответ 2", "Scale": -1, "Answers": null, "QuestionNumber": 1, "NextQuestionIfYes": 0 }], "QuestionNumber": 1, "NextQuestionIfYes": 0 }, { "Question": "Вопрос 2", "Scale": 0, "Answers": [{ "Question": "ответ 1", "Scale": -1, "Answers": null, "QuestionNumber": 0, "NextQuestionIfYes": 0 }, { "Question": "ответ 2", "Scale": -1, "Answers": null, "QuestionNumber": 1, "NextQuestionIfYes": 0 }], "QuestionNumber": 2, "NextQuestionIfYes": 0 }]
+    var questionnaire
     var mainNode = document.getElementById("test")
     questionnaire.forEach(question => {
         let questionDiv = document.createElement('div')
@@ -33,5 +32,3 @@ window.onload = function () {
         CefSharp.PostMessage("windowLoaded")
 
     });
-}
-function initForm() { }

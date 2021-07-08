@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MegaMarketing2Reborn.Models
 {
-    class RegisterAnswer
+    public class RegisterAnswer
     {
         public string QuestionNumber;
         public string Value;
