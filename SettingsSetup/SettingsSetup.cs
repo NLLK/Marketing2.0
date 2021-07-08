@@ -1,4 +1,5 @@
 ﻿using MegaMarketing2Reborn.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -76,10 +77,15 @@ namespace MegaMarketing2Reborn.SettingsSetup
             }
         }
 
-        public void WriteFormXML(List<RegisterQuestion> RegisterList)
+        public void WriteFormJSON(RegisterQuestionnaire registerQuestionnaire)
 		{
-            XmlSerializer ser = new XmlSerializer(typeof(RegisterQuestion));
+            String questionnaireString = "";
+            if (registerQuestionnaire != null)
+            {
+                questionnaireString = JsonConvert.SerializeObject(registerQuestionnaire);
+            }
 
+            File.WriteAllText(Environment.CurrentDirectory + "\\questionnaire.json", questionnaireString);
         }
     }
 }

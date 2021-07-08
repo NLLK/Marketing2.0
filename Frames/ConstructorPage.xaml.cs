@@ -353,7 +353,11 @@ namespace MegaMarketing2Reborn.Frames
 
         private void SaveForm_Click(object sender, RoutedEventArgs e)
 		{
-            props.WriteFormXML(RegisterList);
+            RegisterQuestionnaire registerQuestionnaire = new RegisterQuestionnaire();
+            registerQuestionnaire.setAnswersList(RegisterList);
+            registerQuestionnaire.setPersonnelInfo(props.XMLFields.personnelNumber, props.XMLFields.FIO);
+            registerQuestionnaire.setQuestionnaireName(props.XMLFields.formName);
+            props.WriteFormJSON(registerQuestionnaire);
 		}
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
