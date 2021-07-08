@@ -376,8 +376,11 @@ namespace MegaMarketing2Reborn
                 props.WriteXml();
                 excel.SetExcelFilePath(FBD.SelectedPath);
             }
-
-
+        }
+        private void OpenSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Settings settingsPage = new Settings(props);
+            this.Content = settingsPage;
         }
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
