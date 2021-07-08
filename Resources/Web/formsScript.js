@@ -32,5 +32,3 @@
         CefSharp.PostMessage("windowLoaded")
 
     });
-}
-function initForm() { }

@@ -31,7 +31,6 @@ namespace MegaMarketing2Reborn.Frames
         private RegisterQuestionnaire Questionnaire;
         public WebHtmlWindow(string _recordId, RegisterQuestionnaire _questionnaire, Excel _excel)
         {
-            QuestionnaireName = _questionnaireName;
             RecordId = _recordId;
             Questionnaire = _questionnaire;
             excel = _excel;
