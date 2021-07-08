@@ -25,21 +25,15 @@ namespace MegaMarketing2Reborn.Frames
             if (webBrowser.IsBrowserInitialized == true)
             {
                 string mainDirectory = Environment.CurrentDirectory;
-                /*                String path = string.Format(@"{0}\Resources\Web\index.html", mainDirectory);
-                                string html = "";
+                string scriptPath = string.Format(@"{0}\Resources\Web\index.html", mainDirectory);
+                string script = "";
 
-                                using (StreamReader sr = new StreamReader(path, System.Text.Encoding.UTF8))
-                                {
-                                    string line;
-                                    while ((line = sr.ReadLine()) != null)
-                                    {
-                                        html += line;
-                                    }
-                                }
-                */
-                string path = string.Format(@"file:///{0}/Resources/Web/index.html", mainDirectory.Replace("\\","/"));
+                script = File.ReadAllText(scriptPath, System.Text.Encoding.UTF8);
 
-                webBrowser.Load(path);
+                string html = string.Format(@"file:///{0}/Resources/Web/index.html", mainDirectory.Replace("\\", "/"));
+
+                webBrowser.Load(html);
+
             }
         }
     }
