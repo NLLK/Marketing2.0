@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace MegaMarketing2Reborn.Models
 {
+    [Serializable]
     public class RegisterQuestionnaire
     {
-        private string PersonnelInfo = "";
-        private string Note = "";
-        private string QuestionnaireName = "";
-        private List<RegisterQuestion> AnswersList = new List<RegisterQuestion>();
-        
+        private string PersonnelInfo { get; set; }
+        private string Note { get; set; }
+        private string QuestionnaireName { get; set; }
+        private List<RegisterQuestion> AnswersList { get; set; }
+
 
         public void setPersonnelInfo(string _id, string _name)
         {

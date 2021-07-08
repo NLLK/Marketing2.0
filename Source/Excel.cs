@@ -31,7 +31,7 @@ namespace MegaMarketing2Reborn
             new Uri(Directory.GetCurrentDirectory()/* + "/excel.xlsx"*/, UriKind.RelativeOrAbsolute).ToString();
 
         private bool IfFileExist = true;
-        private int lastRowNumber = 0;
+        public int lastRowNumber = 0;
 
         public Excel()
         {
