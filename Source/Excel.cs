@@ -31,6 +31,7 @@ namespace MegaMarketing2Reborn
             new Uri(Directory.GetCurrentDirectory()/* + "/excel.xlsx"*/, UriKind.RelativeOrAbsolute).ToString();
 
         private bool IfFileExist = true;
+        private int lastRowNumber = 0;
 
         public Excel()
         {
@@ -67,6 +68,23 @@ namespace MegaMarketing2Reborn
         public void Write(int i, int j, string text)
         {
             worksheet.Cells[i, j].Value = text;
+        }
+        public void WriteRow(List<RegisterAnswer> answers)
+        {
+            lastRowNumber++;
+            int j = lastRowNumber;
+
+            int prevParrentNumber = 0;
+            foreach (RegisterAnswer answer in answers)
+            {
+                string[] splitted = answer.QuestionNumber.Split('.');
+                int parrentNumber = Convert.ToInt32(splitted[0]);
+
+                if (parrentNumber == prevParrentNumber)
+                {
+                    
+                }
+            }
         }
 
         public void Write(DataGrid dataGrid)
@@ -215,7 +233,6 @@ namespace MegaMarketing2Reborn
 
         public bool AddRegistersToExcel(List<RegisterQuestion> list)
         {
-
             int lastRegisterPlace = 1;
             int lastRegisterIndex = 0;
 
@@ -244,11 +261,8 @@ namespace MegaMarketing2Reborn
                 lastRegisterIndex++;
                 lastRegisterPlace = (start + i);
             }
-
-
             return Save();
         }
-
         public void CheckIfFileExist()
         {
             //если файл существует, то перезаписать тот, что был, единожды

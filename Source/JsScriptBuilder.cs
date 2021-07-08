@@ -20,6 +20,12 @@ namespace MegaMarketing2Reborn.Source
             mainBody = mainBody.Replace("var "+field, "var " + field+ " = "+ "\""+newField+"\"");
             return mainBody;
         }
+        public string ReplaceValueWithObject(string field, string newField)
+        {
+            mainBody = mainBody.Replace("var " + field, "var " + field + " = " +  newField);
+            return mainBody;
+        }
+
         public void ReadFromFile(string filePath)
         {
             string mainDirectory = Environment.CurrentDirectory;

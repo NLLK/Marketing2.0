@@ -1,5 +1,7 @@
 ﻿using CefSharp;
+using MegaMarketing2Reborn.Models;
 using MegaMarketing2Reborn.Source;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,14 +22,18 @@ namespace MegaMarketing2Reborn.Frames
     /// <summary>
     /// Логика взаимодействия для WebHtmlWindow.xaml
     /// </summary>
+
     public partial class WebHtmlWindow : Window
     {
-        private string QuestionnaireName = "";
+        private string MainDirectory = Environment.CurrentDirectory;
         private string RecordId = "";
-        public WebHtmlWindow(string _questionnaireName, string _recordId)
+        private Excel excel;
+        private RegisterQuestionnaire Questionnaire;
+        public WebHtmlWindow(string _recordId, RegisterQuestionnaire _questionnaire, Excel _excel)
         {
-            QuestionnaireName = _questionnaireName;
             RecordId = _recordId;
+            Questionnaire = _questionnaire;
+            excel = _excel;
             InitializeComponent();
         }
         private void webBrowser_IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -42,13 +48,16 @@ namespace MegaMarketing2Reborn.Frames
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            string mainDirectory = Environment.CurrentDirectory;
-            //string html = string.Format(@"file:///{0}/Resources/Web/{1}", mainDirectory.Replace("\\", "/"), "index.html");
+            //string html = string.Format(@"file:///{0}/Resources/Web/{1}", MainDirectory.Replace("\\", "/"), "index.html");
             //JsScriptBuilder scriptBuilder = new JsScriptBuilder(html);
         }
         private async void webBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            //JavascriptResponse result = await webBrowser.EvaluateScriptAsync("alert(\"AAAAAAAA\")");
+            string path = string.Format(@"{0}\Resources\Web\{1}", MainDirectory, "formsScript.js");
+            JsScriptBuilder scriptBuilder = new JsScriptBuilder(path);
+            scriptBuilder.ReplaceValueWithObject("questionnaire", JsonConvert.SerializeObject(Questionnaire.getAnswersList()));
+
+            JavascriptResponse result = await webBrowser.EvaluateScriptAsync(scriptBuilder.getScript());
         }
 
         private void webBrowser_JavascriptMessageReceived(object sender, JavascriptMessageReceivedEventArgs e)
@@ -57,16 +66,22 @@ namespace MegaMarketing2Reborn.Frames
             {
                 responseFromJS_windowLoaded();
             }
+            else responseFromJS_answers(e.Message.ToString());
         }
         private async void responseFromJS_windowLoaded()
         {
-            string mainDirectory = Environment.CurrentDirectory;
-            string path = string.Format(@"{0}\Resources\Web\{1}", mainDirectory, "setFieldsScript.js");
+            string path = string.Format(@"{0}\Resources\Web\{1}", MainDirectory, "setFieldsScript.js");
             JsScriptBuilder scriptBuilder = new JsScriptBuilder(path);
-            scriptBuilder.ReplaceValue("questionnaireName", QuestionnaireName);
+            scriptBuilder.ReplaceValue("questionnaireName", Questionnaire.getQuestionnaireName());
             scriptBuilder.ReplaceValue("recordId", RecordId);
 
             JavascriptResponse result = await webBrowser.EvaluateScriptAsync(scriptBuilder.getScript());
+        }
+        private async void responseFromJS_answers(string jsonAnswers)
+        {
+            //TODO:добавить вложенность
+            List<RegisterAnswer> answersFromJson = JsonConvert.DeserializeObject<List<RegisterAnswer>>(jsonAnswers);
+            excel.WriteRow(answersFromJson);
         }
     }
 }
