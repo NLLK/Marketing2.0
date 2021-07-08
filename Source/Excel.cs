@@ -71,20 +71,25 @@ namespace MegaMarketing2Reborn
         }
         public void WriteRow(List<RegisterAnswer> answers)
         {
-            lastRowNumber++;
-            int j = lastRowNumber;
-
+            int i = lastRowNumber+1;
+            int j = 1;
             int prevParrentNumber = 0;
             foreach (RegisterAnswer answer in answers)
             {
                 string[] splitted = answer.QuestionNumber.Split('.');
                 int parrentNumber = Convert.ToInt32(splitted[0]);
 
-                if (parrentNumber == prevParrentNumber)
+                if (parrentNumber != prevParrentNumber)
                 {
-                    
+                    prevParrentNumber = parrentNumber;
+                    j++;
                 }
+
+                worksheet.Cells[i, j].Value2 = answer.Value;
+                j++;
             }
+            lastRowNumber++;
+            workbook.Save();
         }
 
         public void Write(DataGrid dataGrid)
@@ -235,6 +240,8 @@ namespace MegaMarketing2Reborn
         {
             int lastRegisterPlace = 1;
             int lastRegisterIndex = 0;
+
+            lastRowNumber++;
 
             foreach (RegisterQuestion register in list)
             {
