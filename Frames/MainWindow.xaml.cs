@@ -31,7 +31,7 @@ namespace MegaMarketing2Reborn
             //создание файла с настройками и чтение из него
             props = new Props();
 
-            ConstructorFrame.Navigate(new ConstructotPage(excel, props));
+            ConstructorFrame.Navigate(new ConstructorPage(excel, props));
         }
                 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)

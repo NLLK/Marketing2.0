@@ -89,13 +89,18 @@
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\PresentationFramework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Frames\ConstructorPage.xaml.cs">
+      <DependentUpon>ConstructorPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Frames\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -110,6 +115,10 @@
     <Compile Include="SettingsSetup\SettingsSetup.cs" />
     <Compile Include="Models\RegisterQuestion.cs" />
     <Compile Include="Source\JsScriptBuilder.cs" />
+    <Page Include="Frames\ConstructorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Frames\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

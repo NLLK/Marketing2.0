@@ -14,7 +14,7 @@ namespace MegaMarketing2Reborn.Frames
     /// <summary>
     /// Логика взаимодействия для ConstructotPage.xaml
     /// </summary>
-    public partial class ConstructotPage : Page
+    public partial class ConstructorPage : Page
     {
         Excel excel;
         Props props;
@@ -35,7 +35,7 @@ namespace MegaMarketing2Reborn.Frames
         private List<RegisterQuestion> RegisterList = new List<RegisterQuestion>();
 
 
-        public ConstructotPage(Excel _excel, Props _props)
+        public ConstructorPage(Excel _excel, Props _props)
         {
             InitializeComponent();
 
