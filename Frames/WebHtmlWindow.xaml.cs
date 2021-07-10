@@ -55,7 +55,7 @@ namespace MegaMarketing2Reborn.Frames
         {
             string path = string.Format(@"{0}\Resources\Web\{1}", MainDirectory, "formsScript.js");
             JsScriptBuilder scriptBuilder = new JsScriptBuilder(path);
-            scriptBuilder.ReplaceValueWithObject("questionnaire", JsonConvert.SerializeObject(Questionnaire.getAnswersList()));
+            //scriptBuilder.ReplaceValueWithObject("questionnaire", JsonConvert.SerializeObject(Questionnaire.getAnswersList()));
 
             JavascriptResponse result = await webBrowser.EvaluateScriptAsync(scriptBuilder.getScript());
         }
@@ -80,7 +80,7 @@ namespace MegaMarketing2Reborn.Frames
         private async void responseFromJS_answers(string jsonAnswers)
         {
             //TODO:добавить вложенность
-            List<RegisterAnswer> answersFromJson = JsonConvert.DeserializeObject<List<RegisterAnswer>>(jsonAnswers);
+            List<RegisterQuestion> answersFromJson = JsonConvert.DeserializeObject<List<RegisterQuestion>>(jsonAnswers);
             excel.WriteRow(answersFromJson);
         }
     }

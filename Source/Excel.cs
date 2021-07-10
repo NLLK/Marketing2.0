@@ -69,27 +69,39 @@ namespace MegaMarketing2Reborn
         {
             worksheet.Cells[i, j].Value = text;
         }
-        public void WriteRow(List<RegisterAnswer> answers)
+        public void WriteRow(List<RegisterQuestion> questions)
         {
-            int i = lastRowNumber+1;
-            int j = 1;
-            int prevParrentNumber = 0;
-            foreach (RegisterAnswer answer in answers)
+            int row = lastRowNumber+1;
+            int column = 1;
+            foreach (RegisterQuestion question in questions)
             {
-                string[] splitted = answer.QuestionNumber.Split('.');
-                int parrentNumber = Convert.ToInt32(splitted[0]);
-
-                if (parrentNumber != prevParrentNumber)
-                {
-                    prevParrentNumber = parrentNumber;
-                    j++;
-                }
-
-                worksheet.Cells[i, j].Value2 = answer.Value;
-                j++;
+                column++;
+                column = WrittingFunction(row, column, question);
             }
             lastRowNumber++;
             workbook.Save();
+        }
+
+        private int WrittingFunction(int row, int column, RegisterQuestion question)
+        {
+            foreach (RegisterQuestion answer in question.Answers)
+            {
+                if (answer.Answers == null)
+                {
+                    //это ответ
+                    worksheet.Cells[row, column].Value2 = answer.Value;
+                    column++;
+                }
+                else
+                {
+                    //это подвопрос
+                    worksheet.Cells[row, column].Value2 = answer.Value;//TODO: под вопросом, нужно ли это тут
+                    column++;
+                    column = WrittingFunction(row, column, answer);
+                }
+            }
+
+            return column;
         }
 
         public void Write(DataGrid dataGrid)

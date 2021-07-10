@@ -8,7 +8,7 @@
       d:DesignHeight="680" d:DesignWidth="1280"
       Title="ConstructotPage">
 
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <ScrollViewer Margin="2,25,310,0" Width="960">
             <StackPanel>
                 <Label x:Name="questionnaireNameLabel" Content="Имя анкеты: " Grid.Row="0" Grid.Column="0" Margin="0,-1,0,1"/>

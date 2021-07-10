@@ -110,7 +110,6 @@
     <Compile Include="Frames\WebHtmlWindow.xaml.cs">
       <DependentUpon>WebHtmlWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\RegisterAnswer.cs" />
     <Compile Include="Models\RegisterQuestionnaire.cs" />
     <Compile Include="SettingsSetup\SettingsSetup.cs" />
     <Compile Include="Models\RegisterQuestion.cs" />

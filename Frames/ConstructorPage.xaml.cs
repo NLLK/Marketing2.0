@@ -364,5 +364,10 @@ namespace MegaMarketing2Reborn.Frames
             WebHtmlWindow window = new WebHtmlWindow(recordId, registerQuestionnaire, excel);
             window.Show();
         }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            questionnaireNameLabel.Content = "Имя анкеты: " + props.XMLFields.formName;
+        }
     }
 }
