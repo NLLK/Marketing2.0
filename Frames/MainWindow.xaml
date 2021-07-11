@@ -12,7 +12,7 @@
             <!--<MenuItem Header="Таблица" Click="OpenTable"/>-->
             <MenuItem Header="Настройки" Click="OpenSettingsButton_Click"/>
         </Menu>
-        <Frame x:Name="ConstructorFrame" HorizontalAlignment="Left" VerticalAlignment="Top"  NavigationUIVisibility="Hidden" Panel.ZIndex="0" Visibility="Visible" />
+        <Frame x:Name="ConstructorFrame" NavigationUIVisibility="Hidden" Margin="0,25,0,0"/>
         
     </Grid>
 </Window>

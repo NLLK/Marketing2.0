@@ -81,7 +81,6 @@ namespace MegaMarketing2Reborn
             lastRowNumber++;
             workbook.Save();
         }
-
         private int WrittingFunction(int row, int column, RegisterQuestion question)
         {
             foreach (RegisterQuestion answer in question.Answers)
@@ -100,7 +99,6 @@ namespace MegaMarketing2Reborn
                     column = WrittingFunction(row, column, answer);
                 }
             }
-
             return column;
         }
 
