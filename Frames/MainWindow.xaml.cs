@@ -26,7 +26,7 @@ namespace MegaMarketing2Reborn
             //TODO: переместить создание документа в другое место
             //создание excel документа и класса
             excel = new Excel();
-            excel.CreateDoc();
+            //excel.CreateDoc();
 
             //создание файла с настройками и чтение из него
             props = new Props();

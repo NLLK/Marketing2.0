@@ -72,7 +72,7 @@ namespace MegaMarketing2Reborn.Frames
         {
             string path = string.Format(@"{0}\Resources\Web\{1}", MainDirectory, "setFieldsScript.js");
             JsScriptBuilder scriptBuilder = new JsScriptBuilder(path);
-            scriptBuilder.ReplaceValue("questionnaireName", Questionnaire.getQuestionnaireName());
+            scriptBuilder.ReplaceValue("questionnaireName", Questionnaire.QuestionnaireName);
             scriptBuilder.ReplaceValue("recordId", excel.lastRowNumber.ToString());
 
             JavascriptResponse result = await webBrowser.EvaluateScriptAsync(scriptBuilder.getScript());
