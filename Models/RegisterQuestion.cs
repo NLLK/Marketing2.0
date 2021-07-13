@@ -17,6 +17,11 @@ namespace MegaMarketing2Reborn.Models
                                          //0 - без принудительной 
         public string Value { get; set; }//ответ, в частности
         public RegisterQuestion(){}
+        public RegisterQuestion(RegisterQuestion parrentRegisterQuestion)
+        {
+            string questionNumber = parrentRegisterQuestion.QuestionNumber;
+            this.QuestionNumber = questionNumber + "." + (parrentRegisterQuestion.Answers.Count+1);
+        }
         public RegisterQuestion(string question, int scale, List<RegisterQuestion> answers, string questionNumber, int nextQuestionIfYes)
         {
             Question = question;

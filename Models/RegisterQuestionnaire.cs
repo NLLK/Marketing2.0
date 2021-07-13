@@ -12,7 +12,15 @@ namespace MegaMarketing2Reborn.Models
         public string PersonnelInfo { get; set; }
         public string Note { get; set; }
         public string QuestionnaireName { get; set; }
-        public List<RegisterQuestion> AnswersList { get; set; }
+        public List<RegisterQuestion> QuestionsList { get; set; }
+
+        public RegisterQuestionnaire()
+        {
+            this.PersonnelInfo = "";
+            this.Note = "";
+            this.QuestionnaireName = "";
+            this.QuestionsList = new List<RegisterQuestion>();
+        }
 
         public void setPersonnelInfo(string _id, string _name)
         {

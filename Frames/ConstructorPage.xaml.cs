@@ -34,7 +34,7 @@ namespace MegaMarketing2Reborn.Frames
             //первоначальная инициализация окна
             RegisterEditor.Visibility = Visibility.Hidden;
             AnswerEditor.Visibility = Visibility.Hidden;
-            Questionnaire.AnswersList = new List<RegisterQuestion>();
+            //Questionnaire.QuestionsList = new List<RegisterQuestion>();
         }
 
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
@@ -74,10 +74,11 @@ namespace MegaMarketing2Reborn.Frames
             AnswerEditor.Visibility = Visibility.Visible;
             //указать, что вводим вопрос
             AnswerEditorQuestionOrAnswerLabel.Content = "Текст вопроса: ";
+            AnswerEditorTextBox.Tag = "Текст вопроса: ";
             //радиобаттоны скрыть
             ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Hidden;
             //добавить в объект
-            Questionnaire.AnswersList.Add(new RegisterQuestion() { QuestionNumber = prevQuestionNumber });
+            Questionnaire.QuestionsList.Add(new RegisterQuestion() { QuestionNumber = prevQuestionNumber });
         }
         private string AddParrentQuestionButtonAndLabel(Button sender)
         {
@@ -96,21 +97,11 @@ namespace MegaMarketing2Reborn.Frames
             }
 
             //определить номер нового вопроса
-            int questionNumberInt = int.Parse(lastQuestionButton.Tag.ToString()) +1;
+            int questionNumberInt = int.Parse(lastQuestionButton.Tag.ToString()) + 1;
             string questionNumber = questionNumberInt.ToString();
 
             //добавить строки для вопроса и кнопки
-            RowDefinition labelRow = new RowDefinition();
-            labelRow.Height = new GridLength(15);
-            labelRow.Name = "QuestionLabelRow" + questionNumber;
-
-            RegisterTreeGrid.RowDefinitions.Add(labelRow);
-
-            RowDefinition buttonRow = new RowDefinition();
-            buttonRow.Height = new GridLength(30);
-            buttonRow.Name = "QuestionButtonRow" + questionNumber;
-
-            RegisterTreeGrid.RowDefinitions.Add(buttonRow);
+            AddRowDefenitions(questionNumber);
 
             //добавить подпись к кнопке
             Label newQuestionLabel = (Label)CopyObject(lastQuestionLabel);
@@ -133,16 +124,28 @@ namespace MegaMarketing2Reborn.Frames
             lastQuestionButton.Click += QuestionButtonEditting_Click;
             //добавить кнопку в Grid
             Grid.SetColumn(newQuestionButton, 0);
-            Grid.SetRow(newQuestionButton, (questionNumberInt*2)-1);
+            Grid.SetRow(newQuestionButton, (questionNumberInt * 2) - 1);
 
             RegisterTreeGrid.Children.Add(newQuestionButton);
-
-            return (questionNumberInt-1).ToString();
+            RegisterName(newQuestionButton.Name, newQuestionButton);
+            return (questionNumberInt - 1).ToString();
         }
 
-        private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
+        private void AddRowDefenitions(string questionNumber)
         {
-            //throw new NotImplementedException();
+            questionNumber = questionNumber.Replace('.', '_');
+            //добавить строки для вопроса и кнопки
+            RowDefinition labelRow = new RowDefinition();
+            labelRow.Height = new GridLength(15);
+            labelRow.Name = "QuestionLabelRow" + questionNumber;
+
+            RegisterTreeGrid.RowDefinitions.Add(labelRow);
+
+            RowDefinition buttonRow = new RowDefinition();
+            buttonRow.Height = new GridLength(30);
+            buttonRow.Name = "QuestionButtonRow" + questionNumber;
+
+            RegisterTreeGrid.RowDefinitions.Add(buttonRow);
         }
 
         private UIElement CopyObject(UIElement origin)
@@ -157,6 +160,169 @@ namespace MegaMarketing2Reborn.Frames
         {
             RegisterEditor.Visibility = Visibility.Hidden;
             AnswerEditor.Visibility = Visibility.Hidden;
+        }
+
+        private void AddSubquestionButton_Click(object sender, RoutedEventArgs e)
+        {
+            //тоже самое, что при ответе, но scale = 0
+        }
+
+        private void AddAnswerButton_Click(object sender, RoutedEventArgs e)
+        {
+            //добавить в объект новое поле //scale != 0
+            string parentQuestionIndex = QuestionIndexLabel.Content.ToString();
+
+            string[] splitted = parentQuestionIndex.Split('.');
+            RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
+            RegisterQuestion newAnswer = new RegisterQuestion(question);
+            question.Answers.Add(newAnswer);
+
+            //добавить в грид кнопку и надпись
+            AddQuestionButtonAndLabel(newAnswer, (Button)sender);
+            //TODO: делаем это
+            //подвинуть другие кнопки, если требуется
+            //отрисовать линию
+
+        }
+
+
+        private void AddQuestionButtonAndLabel(RegisterQuestion question, Button senderButton)
+        {
+            string questionNumber = question.QuestionNumber;
+
+            AddRowDefenitions(questionNumber);
+
+            string[] splitted = questionNumber.Split('.');
+            Array.Resize(ref splitted, splitted.Length - 1);
+            RegisterQuestion parrentQuestion = getQuestion(splitted, Questionnaire.QuestionsList);
+            int numberOfAnswers = getNumberOfAnswers(parrentQuestion);
+
+            //numberOfAnswers++;
+
+            int buttonRow = Grid.GetRow(senderButton) + numberOfAnswers * 2;
+            int column = getLevelOfQuestion(questionNumber);
+
+            buttonRow = getPrevQuestionButtonRow(column, parrentQuestion);
+
+            //добавить подпись к кнопке
+            Label newQuestionLabel = (Label)CopyObject(AnswerLabelExample);
+            newQuestionLabel.Content = questionNumber;
+            newQuestionLabel.Visibility = Visibility.Visible;
+
+            Grid.SetColumn(newQuestionLabel, column);
+            Grid.SetRow(newQuestionLabel, buttonRow - 1);
+
+            RegisterTreeGrid.Children.Add(newQuestionLabel);
+
+            Button newQuestionButton = (Button)CopyObject(QuestionButton1);
+            newQuestionButton.Tag = questionNumber;
+            newQuestionButton.Name = "QuestionButton" + questionNumber.Replace('.', '_');
+
+            newQuestionButton.Click += QuestionButtonEditting_Click;
+
+            Grid.SetColumn(newQuestionButton, getLevelOfQuestion(questionNumber));
+            Grid.SetRow(newQuestionButton, buttonRow);
+
+            RegisterTreeGrid.Children.Add(newQuestionButton);
+
+            RegisterName(newQuestionButton.Name, newQuestionButton);
+
+        }
+        private int getPrevQuestionButtonRow(int column, RegisterQuestion parrentQuestion)
+        {
+            Button lastButtonInRow = null;
+            foreach (UIElement element in RegisterTreeGrid.Children)
+            {
+                if (Object.ReferenceEquals(element.GetType(), typeof(Button)))
+                {
+                    int columnOfElement = Grid.GetColumn(element);
+                    if (columnOfElement == column)// && ((Button)element).Tag.ToString() == parrentQuestion.QuestionNumber)
+                    {
+                        lastButtonInRow = (Button)element;
+                    }
+                }
+            }
+            if (lastButtonInRow == null)
+            {
+                Button parrentButton = (Button)RegisterTreeGrid.FindName("QuestionButton" + parrentQuestion.QuestionNumber.Replace('.', '_'));
+                return Grid.GetRow(parrentButton)+2;
+            }
+            else
+                return Grid.GetRow(lastButtonInRow) + 2;
+
+        }
+        private int getLevelOfQuestion(string questionNumber)
+        {
+            string[] levels = questionNumber.Split('.');
+            return levels.Length - 1;
+        }
+        private int getNumberOfAnswers(RegisterQuestion parrentQuestion)
+        {
+            int number = 0;
+            foreach (RegisterQuestion el in parrentQuestion.Answers)
+            {
+                if (el.Answers != null)
+                {
+                    number++;
+                    number += getNumberOfAnswers(el);
+                }
+                else number++;
+
+            }
+            return number;
+        }
+        private RegisterQuestion getQuestion(string[] index, List<RegisterQuestion> parentAnswersList)
+        {
+            int parentQuestionNumber = int.Parse(index[0]) - 1;
+
+            RegisterQuestion question = parentAnswersList[parentQuestionNumber];
+
+            if (question.Answers == null)
+            {
+                parentAnswersList[parentQuestionNumber].Answers = new List<RegisterQuestion>();
+                question.Answers = parentAnswersList[parentQuestionNumber].Answers;
+            }
+
+            if (index.Length == 1)
+            {
+                return question;
+            }
+            else
+            {
+                index = ResizeArray(index);
+                return getQuestion(index, question.Answers);
+            }
+        }
+
+        private string[] ResizeArray(string[] array)
+        {
+            string[] newArray = new string[array.Length-1];
+            for (int i = 1; i < array.Length; i++)
+            {
+                newArray[i - 1] = array[i];
+            }
+            return newArray;
+        }
+
+        private void AddTemplateAnswerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AnswerEditorSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            //сохранить ответ/вопрос
+        }
+        private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
+        {
+            QuestionIndexLabel.Content = ((Button)sender).Tag.ToString();
+
+            RegisterEditor.Visibility = Visibility.Visible;
+            AnswerEditor.Visibility = Visibility.Visible;
+
+            //записать данные об подвопросах в грид
+            //указать в AnswerEditor что это вопрос
+            //поместить туда вопрос, если уже имеется
         }
     }
 }

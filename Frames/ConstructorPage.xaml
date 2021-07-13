@@ -42,7 +42,7 @@
 
                     <Label Content="Вопрос 1" Name="QuestionLabel1" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,-5,0,0"/>
                     <Button Content="+" Tag="1" Name="QuestionButton1" Grid.Column="0" Grid.Row="1"  Margin="15,3,15,3" Click="QuestionButton_Click"/>
-
+                    <Label Content = "1.1" Name="AnswerLabelExample" Grid.Row = "2" Grid.Column = "1" HorizontalAlignment = "Right" Grid.RowSpan = "2" Margin = "0,-5,10,0" Visibility="Hidden"/>
                     <Canvas Name="RegisterTreeLinesCanvas" Visibility="Hidden">
                         <Polyline Stroke="Black" StrokeThickness="3" Points="103, 15, 118, 15, 118, 45, 133, 45" />
                     </Canvas>
@@ -85,6 +85,7 @@
                     <Grid Name="RegisterEditAddButtonsGrid" DockPanel.Dock="Bottom">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
@@ -93,24 +94,25 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
-                        <Button Name="AddSubquestionButton" Content="Добавить подвопрос" Height="30" Grid.Row="0"  DockPanel.Dock="Bottom"/>
-                        <Button Name="AddAnswerButton" Content="Добавить ответ"  Height="30" Grid.Row="1" DockPanel.Dock="Bottom"/>
-                        <Button Name="AddTemplateAnswerButton" Content="Добавить ответ по шаблону" Height="30" Grid.Row="2" DockPanel.Dock="Bottom"/>
-                        <Button Name="DeleteRegisterButton" Content="Удалить регистр" Height="30" Grid.Row="4" DockPanel.Dock="Bottom" Foreground="Red"/>
+                        <Button Name="AddSubquestionButton" Content="Добавить подвопрос" Height="30" Grid.Row="0" Grid.ColumnSpan="2" Click="AddSubquestionButton_Click"/>
+                        <Button Name="AddAnswerButton" Content="Добавить ответ"  Height="30" Grid.Row="1" Grid.ColumnSpan="2" Click="AddAnswerButton_Click"/>
+                        <Button Name="AddTemplateAnswerButton" Content="Добавить ответ по шаблону" Height="30" Grid.Row="2" Grid.ColumnSpan="2" Click="AddTemplateAnswerButton_Click"/>
+                        <Button Name="DeleteRegisterButton" Content="Удалить регистр" Height="30" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Red"/>
                     </Grid>
                 </DockPanel>
             </Grid>
         </Border>
         <Border Name="AnswerEditor" BorderThickness="2" BorderBrush ="#BEBEBE"  Grid.Row="1" Margin="0,-2,0,0" >
-            <Grid>
+            <Grid Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width="1.3*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="45"/>
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="2" LastChildFill="True" Margin="10">
+                <DockPanel Grid.Row="0" Margin="10" Grid.RowSpan="2">
                     <Label Name="AnswerEditorQuestionOrAnswerLabel" Content="Текст вопроса / Ответ: " FontSize="14" DockPanel.Dock="Top"/>
                     <TextBox Name="AnswerEditorTextBox" Style="{StaticResource placeHolder}" Tag="Текст вопроса / Ответ"/>
                 </DockPanel>
@@ -119,7 +121,7 @@
                     <RadioButton Content="Развернутый ответ" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Margin="0,0,0,5" Grid.Column="1"/>
                     <RadioButton Content="Интервалы" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Grid.Column="1"/>
                 </DockPanel>
-
+                <Button Name="AnswerEditorSaveButton" Content="Сохранить" DockPanel.Dock="Bottom" Grid.Row="1" Grid.Column="1" Margin="5,5,5,10" Click="AnswerEditorSaveButton_Click"/>
             </Grid>
         </Border>
         <GridSplitter Grid.Column="0" ShowsPreview="True" Width="3" Background="Gray" HorizontalAlignment="Right" VerticalAlignment="Stretch"  />
