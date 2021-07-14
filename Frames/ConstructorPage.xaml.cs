@@ -24,6 +24,9 @@ namespace MegaMarketing2Reborn.Frames
 
         private RegisterQuestionnaire Questionnaire = new RegisterQuestionnaire();
 
+        private List<Button[]> TreeButtonsArray = new List<Button[]>();
+        private List<Label[]> TreeLabelsArray = new List<Label[]>();
+
         public ConstructorPage(Excel _excel, Props _props)
         {
             InitializeComponent();
@@ -34,7 +37,11 @@ namespace MegaMarketing2Reborn.Frames
             //первоначальная инициализация окна
             RegisterEditor.Visibility = Visibility.Hidden;
             AnswerEditor.Visibility = Visibility.Hidden;
-            //Questionnaire.QuestionsList = new List<RegisterQuestion>();
+
+
+            AddButtonsAndLabelsInTreeArrays(1, 0, (Button)RegisterTreeGrid.FindName("QuestionButton1"), (Label)RegisterTreeGrid.FindName("QuestionLabel1"));
+
+
         }
 
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
@@ -50,16 +57,6 @@ namespace MegaMarketing2Reborn.Frames
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             //QuestionnaireNameLabel.Content = "Имя анкеты: " + props.XMLFields.formName;
-        }
-
-        private void SomeFunction()
-        {
-            /*< Button Grid.Column = "1" Grid.Row = "3" Content = "+" Tag = "1" Margin = "15,3,15,3" />
-              < Label Content = "1.1" Grid.Row = "2" Grid.Column = "1" HorizontalAlignment = "Right" Grid.RowSpan = "2" Margin = "0,-5,10,0" />*/
-            /*
-             <Label Content="Добавить вопрос" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,-5,0,0"/>
-             <Button Grid.Column="0" Grid.Row="5" Content="+" Tag="1" Margin="15,3,15,3"/>
-             */
         }
 
         private void QuestionButton_Click(object sender, RoutedEventArgs e)
@@ -123,11 +120,18 @@ namespace MegaMarketing2Reborn.Frames
             lastQuestionButton.Click -= QuestionButton_Click;
             lastQuestionButton.Click += QuestionButtonEditting_Click;
             //добавить кнопку в Grid
-            Grid.SetColumn(newQuestionButton, 0);
-            Grid.SetRow(newQuestionButton, (questionNumberInt * 2) - 1);
+
+            int buttonRow = (questionNumberInt * 2) - 1;
+            int buttonColumn = 0;
+
+            Grid.SetColumn(newQuestionButton, buttonColumn);
+            Grid.SetRow(newQuestionButton, buttonRow);
 
             RegisterTreeGrid.Children.Add(newQuestionButton);
             RegisterName(newQuestionButton.Name, newQuestionButton);
+
+            AddButtonsAndLabelsInTreeArrays(buttonRow, buttonColumn, newQuestionButton, newQuestionLabel);
+
             return (questionNumberInt - 1).ToString();
         }
 
@@ -179,30 +183,34 @@ namespace MegaMarketing2Reborn.Frames
 
             //добавить в грид кнопку и надпись
             AddQuestionButtonAndLabel(newAnswer, (Button)sender);
-            //TODO: делаем это
+
+            MoveButtonsAndLabelsDown();
+
             //подвинуть другие кнопки, если требуется
             //отрисовать линию
 
         }
 
-
         private void AddQuestionButtonAndLabel(RegisterQuestion question, Button senderButton)
         {
+            //номер вопроса новой кнопки
             string questionNumber = question.QuestionNumber;
-
+            //добавляем строк
             AddRowDefenitions(questionNumber);
 
+            //получаем объект родительского вопроса
             string[] splitted = questionNumber.Split('.');
             Array.Resize(ref splitted, splitted.Length - 1);
             RegisterQuestion parrentQuestion = getQuestion(splitted, Questionnaire.QuestionsList);
-            int numberOfAnswers = getNumberOfAnswers(parrentQuestion);
+            int numberOfAnswers = 0;
+            for (int i = 0; i < parrentQuestion.Answers.Count - 1; i++)
+            {
+                //получаем количество ответов, которое уже есть в этом вопросе и ниже
+                numberOfAnswers += getNumberOfAnswers(parrentQuestion.Answers[i]);
+            }
 
-            //numberOfAnswers++;
-
-            int buttonRow = Grid.GetRow(senderButton) + numberOfAnswers * 2;
             int column = getLevelOfQuestion(questionNumber);
-
-            buttonRow = getPrevQuestionButtonRow(column, parrentQuestion);
+            int buttonRow = getPrevQuestionButtonRow(parrentQuestion) + numberOfAnswers * 2 + 2;
 
             //добавить подпись к кнопке
             Label newQuestionLabel = (Label)CopyObject(AnswerLabelExample);
@@ -227,29 +235,97 @@ namespace MegaMarketing2Reborn.Frames
 
             RegisterName(newQuestionButton.Name, newQuestionButton);
 
+            AddButtonsAndLabelsInTreeArrays(buttonRow, column, newQuestionButton, newQuestionLabel);
+
         }
-        private int getPrevQuestionButtonRow(int column, RegisterQuestion parrentQuestion)
+
+        private void MoveButtonsAndLabelsDown()
         {
-            Button lastButtonInRow = null;
-            foreach (UIElement element in RegisterTreeGrid.Children)
+            for (int rowNumber = 0; rowNumber < TreeButtonsArray.Count; rowNumber++)
             {
-                if (Object.ReferenceEquals(element.GetType(), typeof(Button)))
+                Button[] buttons = TreeButtonsArray[rowNumber];
+                int buttonCount = 0;
+                int indexOfLastButton = 0;
+                //количество кнопок в строке
+                for (int i = 0; i < buttons.Length; i++)
                 {
-                    int columnOfElement = Grid.GetColumn(element);
-                    if (columnOfElement == column)// && ((Button)element).Tag.ToString() == parrentQuestion.QuestionNumber)
+                    if (buttons[i] != null)
                     {
-                        lastButtonInRow = (Button)element;
+                        buttonCount++;
+                        indexOfLastButton = i;
                     }
                 }
-            }
-            if (lastButtonInRow == null)
-            {
-                Button parrentButton = (Button)RegisterTreeGrid.FindName("QuestionButton" + parrentQuestion.QuestionNumber.Replace('.', '_'));
-                return Grid.GetRow(parrentButton)+2;
-            }
-            else
-                return Grid.GetRow(lastButtonInRow) + 2;
+                //если больше одной
+                if (buttonCount != 1)
+                {//для всех кнопок, кроме последней добавленной 
 
+                    TreeButtonsArray.Insert(rowNumber+1, new Button[8]);
+                    TreeLabelsArray.Insert(rowNumber + 1, new Label[8]);
+                    //MoveDownTable(rowNumber);
+
+                    for (int i = 0; i < indexOfLastButton; i++)
+                    {
+                        if (buttons[i] != null)
+                        {
+                            TreeButtonsArray[rowNumber + 1][i] = TreeButtonsArray[rowNumber][i];
+                            TreeButtonsArray[rowNumber][i] = null;
+
+                            TreeLabelsArray[rowNumber + 1][i] = TreeLabelsArray[rowNumber][i];
+                            TreeLabelsArray[rowNumber][i] = null;
+                        }
+
+                    }
+                    for (int i = indexOfLastButton + 1; i < 8; i++)
+                    {
+                        if (buttons[i] != null)
+                        {
+                            TreeButtonsArray[rowNumber + 1][i] = TreeButtonsArray[rowNumber][i];
+                            TreeButtonsArray[rowNumber][i] = null;
+
+                            TreeLabelsArray[rowNumber + 1][i] = TreeLabelsArray[rowNumber][i];
+                            TreeLabelsArray[rowNumber][i] = null;
+                        }
+                    }
+
+
+                    for (int j = 0; j < TreeButtonsArray.Count; j++)
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            if (TreeButtonsArray[j][i] != null)
+                                Grid.SetRow(TreeButtonsArray[j][i], (j*2)+1);
+                            if (TreeLabelsArray[j][i] != null)
+                                Grid.SetRow(TreeLabelsArray[j][i], (j * 2));
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        private void AddButtonsAndLabelsInTreeArrays(int row, int column, Button button, Label label)
+        {
+            row = (row - 1) / 2;
+            while (TreeButtonsArray.Count - 1 < row)
+            {
+                TreeButtonsArray.Add(new Button[8]);
+            }
+            TreeButtonsArray[row][column] = button;
+
+            while (TreeLabelsArray.Count - 1 < row)
+            {
+                TreeLabelsArray.Add(new Label[8]);
+            }
+            TreeLabelsArray[row][column] = label;
+
+        }
+
+        private int getPrevQuestionButtonRow(RegisterQuestion parrentQuestion)
+        {
+            Button questionButton = (Button)RegisterTreeGrid.FindName("QuestionButton" + parrentQuestion.QuestionNumber.Replace('.', '_'));
+
+            return Grid.GetRow(questionButton);
         }
         private int getLevelOfQuestion(string questionNumber)
         {
@@ -258,7 +334,10 @@ namespace MegaMarketing2Reborn.Frames
         }
         private int getNumberOfAnswers(RegisterQuestion parrentQuestion)
         {
-            int number = 0;
+            int number = 1;
+            if (parrentQuestion.Answers == null)
+                return number;
+
             foreach (RegisterQuestion el in parrentQuestion.Answers)
             {
                 if (el.Answers != null)
@@ -267,7 +346,6 @@ namespace MegaMarketing2Reborn.Frames
                     number += getNumberOfAnswers(el);
                 }
                 else number++;
-
             }
             return number;
         }
@@ -296,7 +374,7 @@ namespace MegaMarketing2Reborn.Frames
 
         private string[] ResizeArray(string[] array)
         {
-            string[] newArray = new string[array.Length-1];
+            string[] newArray = new string[array.Length - 1];
             for (int i = 1; i < array.Length; i++)
             {
                 newArray[i - 1] = array[i];
