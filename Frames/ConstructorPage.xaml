@@ -96,9 +96,8 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
-                        <Button Name="AddSubquestionButton" Content="Добавить подвопрос" Height="30" Grid.Row="0" Grid.ColumnSpan="2" Click="AddSubquestionButton_Click"/>
-                        <Button Name="AddAnswerButton" Content="Добавить ответ"  Height="30" Grid.Row="1" Grid.ColumnSpan="2" Click="AddAnswerButton_Click"/>
-                        <Button Name="AddTemplateAnswerButton" Content="Добавить ответ по шаблону" Height="30" Grid.Row="2" Grid.ColumnSpan="2" Click="AddTemplateAnswerButton_Click"/>
+                        <Button Name="AddSubquestionButton" Content="Добавить подрегистр" Height="30" Grid.Row="0" Grid.ColumnSpan="2" Click="AddAnswerButton_Click"/>
+                        <Button Name="AddTemplateAnswerButton" Content="Добавить ответ по шаблону" Height="30" Grid.Row="1" Grid.ColumnSpan="2" Click="AddTemplateAnswerButton_Click"/>
                         <Button Name="DeleteRegisterButton" Content="Удалить регистр" Height="30" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Red"/>
                     </Grid>
                 </DockPanel>

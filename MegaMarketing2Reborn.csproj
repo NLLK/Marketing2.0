@@ -104,9 +104,6 @@
     <Compile Include="Frames\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Frames\WebHtmlPage.xaml.cs">
-      <DependentUpon>WebHtmlPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Frames\WebHtmlWindow.xaml.cs">
       <DependentUpon>WebHtmlWindow.xaml</DependentUpon>
     </Compile>
@@ -136,10 +133,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Frames\TablePresent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Frames\WebHtmlPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

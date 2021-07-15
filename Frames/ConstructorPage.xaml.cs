@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Windows;
-using WinForms = System.Windows.Forms;
 using System.Windows.Controls;
-using MegaMarketing2Reborn.Frames;
 using MegaMarketing2Reborn.SettingsSetup;
 using MegaMarketing2Reborn.Models;
-using System.Net;
 using System.Windows.Markup;
 using System.Xml;
 using System.IO;
@@ -65,21 +61,16 @@ namespace MegaMarketing2Reborn.Frames
         private void QuestionButton_Click(object sender, RoutedEventArgs e)
         {
             //добавить еще кнопку и подпись для вопроса
+            RegisterQuestion newRegister = new RegisterQuestion();
+            Questionnaire.QuestionsList.Add(newRegister);
             string prevQuestionNumber = AddParrentQuestionButtonAndLabel((Button)sender);
-/*            //открыть редактор регистров
-            RegisterEditor.Visibility = Visibility.Visible;
-            //отобразить индекс вопроса
-            QuestionIndexLabel.Content = prevQuestionNumber.ToString();
-            //открыть поле с вводом вопроса
-            AnswerEditor.Visibility = Visibility.Visible;
-            //указать, что вводим вопрос
-            AnswerEditorQuestionOrAnswerLabel.Content = "Текст вопроса: ";
-            AnswerEditorTextBox.Tag = "Текст вопроса: ";*//*
-            //радиобаттоны скрыть
-            ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Hidden;*/
-            //добавить в объект
-            Questionnaire.QuestionsList.Add(new RegisterQuestion() { QuestionNumber = prevQuestionNumber });
+            newRegister.QuestionNumber = prevQuestionNumber;
+
             QuestionEditting(prevQuestionNumber);
+
+            ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Hidden;
+
+            //AnswerEditorSaveButton_Click(sender, e);
         }
         private string AddParrentQuestionButtonAndLabel(Button sender)
         {
@@ -121,8 +112,10 @@ namespace MegaMarketing2Reborn.Frames
             Label newQuestionLabel = (Label)CopyObject(lastQuestionLabel);
             newQuestionLabel.Content = "Вопрос " + questionNumber;
 
+            int questionMainRow = getNumberOfAnswers(Questionnaire.QuestionsList) + 1;
+
             Grid.SetColumn(newQuestionLabel, 0);
-            Grid.SetRow(newQuestionLabel, (questionNumberInt * 2) - 2);
+            Grid.SetRow(newQuestionLabel, (questionMainRow * 2) - 2);
 
             RegisterTreeGrid.Children.Add(newQuestionLabel);
 
@@ -138,7 +131,7 @@ namespace MegaMarketing2Reborn.Frames
             lastQuestionButton.Click += QuestionButtonEditting_Click;
             //добавить кнопку в Grid
 
-            int buttonRow = (questionNumberInt * 2) - 1;
+            int buttonRow = (questionMainRow * 2) - 1;
             int buttonColumn = 0;
 
             Grid.SetColumn(newQuestionButton, buttonColumn);
@@ -151,7 +144,6 @@ namespace MegaMarketing2Reborn.Frames
 
             return (questionNumberInt - 1).ToString();
         }
-
         private void AddRowDefenitions(string questionNumber)
         {
             questionNumber = questionNumber.Replace('.', '_');
@@ -184,6 +176,7 @@ namespace MegaMarketing2Reborn.Frames
 
         private void AddAnswerButton_Click(object sender, RoutedEventArgs e)
         {
+            AnswerEditorSaveButton_Click(sender, e);
             ClearChoosenButtons();
             //добавить в объект новое поле //scale != 0
             string parentQuestionIndex = QuestionIndexLabel.Content.ToString();
@@ -389,7 +382,6 @@ namespace MegaMarketing2Reborn.Frames
                 TreeLabelsArray.Add(new Label[8]);
             }
             TreeLabelsArray[row][column] = label;
-
         }
 
         private int getPrevQuestionButtonRow(RegisterQuestion parrentQuestion)
@@ -419,6 +411,31 @@ namespace MegaMarketing2Reborn.Frames
                 else number++;
             }
             return number;
+        }
+        private int getNumberOfAnswers(List<RegisterQuestion> parrentQuestions)
+        {
+            int commonNumber = 0;
+            foreach (RegisterQuestion parrentQuestion in parrentQuestions)
+            {
+                int number = 1;
+                if (parrentQuestion.Answers == null || parrentQuestion.Answers.Count == 0)
+                {
+                    commonNumber += number;
+                    continue;
+                }
+
+                foreach (RegisterQuestion el in parrentQuestion.Answers)
+                {
+                    if (el.Answers != null)
+                    {
+                        number++;
+                        number += getNumberOfAnswers(el);
+                    }
+                    else number++;
+                }
+                commonNumber += number;
+            }
+            return commonNumber;
         }
         private RegisterQuestion getQuestion(string[] index, List<RegisterQuestion> parentAnswersList)
         {
@@ -484,15 +501,21 @@ namespace MegaMarketing2Reborn.Frames
 
         private void AnswerEditorSaveButton_Click(object sender, RoutedEventArgs e)
         {   //сохранить ответ/вопрос
+
             string index = QuestionIndexLabel.Content.ToString();
             string[] splitted = index.Split('.');
 
-            RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
-            question.Question = AnswerEditorTextBox.Text;
+            if (!index.Equals("0"))
+            {
+                RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
+                question.Question = AnswerEditorTextBox.Text;
+            }
+
         }
 
         private void RegistersScrollViewer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            AnswerEditorSaveButton_Click(sender, e);
             RegisterEditor.Visibility = Visibility.Hidden;
             AnswerEditor.Visibility = Visibility.Hidden;
 
@@ -504,7 +527,7 @@ namespace MegaMarketing2Reborn.Frames
         private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
         {
             ClearChoosenButtons();
-            QuestionEditting(((Control)sender).Tag.ToString());            
+            QuestionEditting(((Control)sender).Tag.ToString());
         }
         private void RegisterEditorAnswerHyperlink_Click(object sender, RoutedEventArgs e)
         {
@@ -518,7 +541,7 @@ namespace MegaMarketing2Reborn.Frames
             RegisterEditor.Visibility = Visibility.Visible;
             AnswerEditor.Visibility = Visibility.Visible;
 
-            Button sender =  (Button)RegisterTreeGrid.FindName("QuestionButton" + index.Replace('.', '_'));
+            Button sender = (Button)RegisterTreeGrid.FindName("QuestionButton" + index.Replace('.', '_'));
 
             HighlightButton(sender);
             //записать данные об подвопросах в грид
@@ -596,12 +619,10 @@ namespace MegaMarketing2Reborn.Frames
                 if (registerQuestion.Answers != null)
                 {
                     if (registerQuestion.Answers.Count != 0)
-                    DrawTreeLines(registerQuestion);
+                        DrawTreeLines(registerQuestion);
                 }
 
             }
         }
-
-
     }
 }

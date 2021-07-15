@@ -55,7 +55,7 @@ namespace MegaMarketing2Reborn.Frames
         {
             string path = string.Format(@"{0}\Resources\Web\{1}", MainDirectory, "formsScript.js");
             JsScriptBuilder scriptBuilder = new JsScriptBuilder(path);
-            //scriptBuilder.ReplaceValueWithObject("questionnaire", JsonConvert.SerializeObject(Questionnaire.getAnswersList()));
+            scriptBuilder.ReplaceValueWithObject("questionnaire", JsonConvert.SerializeObject(Questionnaire.QuestionsList));
 
             JavascriptResponse result = await webBrowser.EvaluateScriptAsync(scriptBuilder.getScript());
         }
