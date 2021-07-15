@@ -11,6 +11,8 @@ using System.Net;
 using System.Windows.Markup;
 using System.Xml;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MegaMarketing2Reborn.Frames
 {
@@ -79,20 +81,33 @@ namespace MegaMarketing2Reborn.Frames
         }
         private string AddParrentQuestionButtonAndLabel(Button sender)
         {
+            ClearChoosenButtons();
             //найти последнюю кнопку с вопросом
             Button lastQuestionButton = new Button();
             Label lastQuestionLabel = new Label();
+            List<Button> list = new List<Button>();
             foreach (UIElement element in RegisterTreeGrid.Children)
             {
                 if (Grid.GetColumn(element) == 0)
                 {
                     if (Object.ReferenceEquals(element.GetType(), typeof(Button)))
-                        lastQuestionButton = (Button)element;
-                    if (Object.ReferenceEquals(element.GetType(), typeof(Label)))
-                        lastQuestionLabel = (Label)element;
+                        list.Add((Button)element);
                 }
             }
-
+            foreach (Button element in getListOfButtonsFromTreeGrid())
+            {
+                if (Grid.GetColumn(element) == 0)
+                {
+                    lastQuestionButton = (Button)element;
+                }
+            }
+            foreach (Label element in getListOfLabelsFromTreeGrid())
+            {
+                if (Grid.GetColumn(element) == 0)
+                {
+                    lastQuestionLabel = (Label)element;
+                }
+            }
             //определить номер нового вопроса
             int questionNumberInt = int.Parse(lastQuestionButton.Tag.ToString()) + 1;
             string questionNumber = questionNumberInt.ToString();
@@ -160,12 +175,6 @@ namespace MegaMarketing2Reborn.Frames
             return (UIElement)XamlReader.Load(xmlReader);
         }
 
-        private void RegistersScrollViewer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            RegisterEditor.Visibility = Visibility.Hidden;
-            AnswerEditor.Visibility = Visibility.Hidden;
-        }
-
         private void AddSubquestionButton_Click(object sender, RoutedEventArgs e)
         {
             //тоже самое, что при ответе, но scale = 0
@@ -173,6 +182,7 @@ namespace MegaMarketing2Reborn.Frames
 
         private void AddAnswerButton_Click(object sender, RoutedEventArgs e)
         {
+            ClearChoosenButtons();
             //добавить в объект новое поле //scale != 0
             string parentQuestionIndex = QuestionIndexLabel.Content.ToString();
 
@@ -183,12 +193,64 @@ namespace MegaMarketing2Reborn.Frames
 
             //добавить в грид кнопку и надпись
             AddQuestionButtonAndLabel(newAnswer, (Button)sender);
-
+            //подвинуть кнопки
             MoveButtonsAndLabelsDown();
-
-            //подвинуть другие кнопки, если требуется
             //отрисовать линию
+            RegisterTreeLinesCanvas.Children.Clear();
+            foreach (RegisterQuestion registerQuestion in Questionnaire.QuestionsList)
+            {
+                DrawTreeLines(registerQuestion);
+            }
+        }
 
+        private void DrawTreeLines(RegisterQuestion question)
+        {
+            Button parrentButton = (Button)RegisterTreeGrid.FindName("QuestionButton" + question.QuestionNumber.Replace('.', '_'));
+            int x1 = Grid.GetColumn(parrentButton);
+            int y1 = Grid.GetRow(parrentButton) / 2;
+
+            foreach (RegisterQuestion answer in question.Answers)
+            {
+                Button childButton = (Button)RegisterTreeGrid.FindName("QuestionButton" + answer.QuestionNumber.Replace('.', '_'));
+                int y2 = (Grid.GetRow(childButton)) / 2;
+
+                DrawTreeLine(x1, y1, y2);
+                if (answer.Answers != null)
+                {
+                    DrawTreeLines(answer);
+                }
+            }
+        }
+
+        private void DrawTreeLine(int x1, int y1, int y2)
+        {
+            int rowLabelHeight = 15;
+            int rowButtonHeight = 30;
+            float columnWidth = (float)RegisterTreeGrid.ActualWidth / 8;
+            int buttonMargin = 15;
+
+            Polyline polyLine = new Polyline() { Stroke = Brushes.Black, StrokeThickness = 2 };
+
+            PointCollection points = new PointCollection();
+
+
+            float x, y;
+
+            x = (x1 + 1) * columnWidth - buttonMargin;
+            y = (y1) * (rowLabelHeight + rowButtonHeight) + (rowLabelHeight + rowButtonHeight / 2);
+            points.Add(new Point(x, y));
+
+            x += buttonMargin;
+            points.Add(new Point(x, y));
+
+            y += (y2 - y1) * ((rowButtonHeight / 2) * 2 + rowLabelHeight);
+            points.Add(new Point(x, y));
+
+            x += buttonMargin;
+            points.Add(new Point(x, y));
+
+            polyLine.Points = points;
+            RegisterTreeLinesCanvas.Children.Add(polyLine);
         }
 
         private void AddQuestionButtonAndLabel(RegisterQuestion question, Button senderButton)
@@ -259,7 +321,7 @@ namespace MegaMarketing2Reborn.Frames
                 if (buttonCount != 1)
                 {//для всех кнопок, кроме последней добавленной 
 
-                    TreeButtonsArray.Insert(rowNumber+1, new Button[8]);
+                    TreeButtonsArray.Insert(rowNumber + 1, new Button[8]);
                     TreeLabelsArray.Insert(rowNumber + 1, new Label[8]);
                     //MoveDownTable(rowNumber);
 
@@ -293,7 +355,7 @@ namespace MegaMarketing2Reborn.Frames
                         for (int i = 0; i < 8; i++)
                         {
                             if (TreeButtonsArray[j][i] != null)
-                                Grid.SetRow(TreeButtonsArray[j][i], (j*2)+1);
+                                Grid.SetRow(TreeButtonsArray[j][i], (j * 2) + 1);
                             if (TreeLabelsArray[j][i] != null)
                                 Grid.SetRow(TreeLabelsArray[j][i], (j * 2));
                         }
@@ -382,6 +444,31 @@ namespace MegaMarketing2Reborn.Frames
             return newArray;
         }
 
+        private List<Button> getListOfButtonsFromTreeGrid()
+        {
+            List<Button> list = new List<Button>();
+            foreach (UIElement element in RegisterTreeGrid.Children)
+            {
+                if (Object.ReferenceEquals(element.GetType(), typeof(Button)))
+                    list.Add((Button)element);
+            }
+            return list;
+        }
+        private List<Label> getListOfLabelsFromTreeGrid()
+        {
+            List<Label> list = new List<Label>();
+            foreach (UIElement element in RegisterTreeGrid.Children)
+            {
+                if (Grid.GetColumn(element) == 0)
+                {
+                    if (Object.ReferenceEquals(element.GetType(), typeof(Label)))
+                        list.Add((Label)element);
+                }
+            }
+            return list;
+        }
+
+
         private void AddTemplateAnswerButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -391,16 +478,33 @@ namespace MegaMarketing2Reborn.Frames
         {
             //сохранить ответ/вопрос
         }
+
+        private void RegistersScrollViewer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            RegisterEditor.Visibility = Visibility.Hidden;
+            AnswerEditor.Visibility = Visibility.Hidden;
+            ClearChoosenButtons();
+        }
+
         private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
         {
+            ClearChoosenButtons();
             QuestionIndexLabel.Content = ((Button)sender).Tag.ToString();
 
             RegisterEditor.Visibility = Visibility.Visible;
             AnswerEditor.Visibility = Visibility.Visible;
 
+            ((Button)sender).Background = Brushes.Aquamarine;
             //записать данные об подвопросах в грид
             //указать в AnswerEditor что это вопрос
             //поместить туда вопрос, если уже имеется
+        }
+        private void ClearChoosenButtons()
+        {
+            foreach (Button button in getListOfButtonsFromTreeGrid())
+            {
+                button.ClearValue(BackgroundProperty);
+            }
         }
     }
 }
