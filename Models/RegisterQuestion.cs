@@ -10,7 +10,7 @@ namespace MegaMarketing2Reborn.Models
     public class RegisterQuestion
     {
         public string Question { get; set; }//вопрос или ответ на вопрос в зависимости от наличия потомков
-        public int Scale { get; set; } //шкала. -1 если у вопроса нет потомков
+        public int Scale { get; set; } //тип ответа. -1 - подвопрос, 0 - наименование, 1 - развернутый ответ, 2 - интервалы
         public List<RegisterQuestion> Answers { get; set; }//Ответы на вопрос
         public string QuestionNumber { get; set; }//номер вопроса (относительно анкеты или потомков)
         public int NextQuestionIfYes { get; set; }//если в качестве ответа был выбран этот вопрос, то перейти к другому пункту

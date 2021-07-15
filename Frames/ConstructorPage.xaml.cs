@@ -506,5 +506,19 @@ namespace MegaMarketing2Reborn.Frames
                 button.ClearValue(BackgroundProperty);
             }
         }
+
+        private void RegisterTreeGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RegisterTreeLinesCanvas.Children.Clear();
+            foreach (RegisterQuestion registerQuestion in Questionnaire.QuestionsList)
+            {
+                if (registerQuestion.Answers != null)
+                {
+                    if (registerQuestion.Answers.Count != 0)
+                    DrawTreeLines(registerQuestion);
+                }
+
+            }
+        }
     }
 }
