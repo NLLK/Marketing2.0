@@ -10,14 +10,14 @@
 
     <Grid Loaded="Grid_Loaded" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.75*"/>
+            <ColumnDefinition Width="0.75*" MinWidth="650"/>
             <ColumnDefinition Width="0.25*" MinWidth="230"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.66*"/>
             <RowDefinition Height="0.33*" MinHeight="80"/>
         </Grid.RowDefinitions>
-        <ScrollViewer x:Name="RegistersScrollViewer" Grid.Column="0" MouseLeftButtonUp="RegistersScrollViewer_MouseLeftButtonUp">
+        <ScrollViewer x:Name="RegistersScrollViewer" Grid.Column="0" MouseLeftButtonUp="RegistersScrollViewer_MouseLeftButtonUp" >
             <StackPanel>
                 <DockPanel MaxHeight="30">
                     <Label x:Name="QuestionnaireNameLabel" Content="Название анкеты: " Margin="0,0,10,0" />
@@ -78,7 +78,7 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0">
-                            <Hyperlink>1.1</Hyperlink>
+                            <Hyperlink Click="RegisterEditorAnswerHyperlink_Click">1.1</Hyperlink>
                         </Label>
                         <Label Grid.Row="1">
                             <Hyperlink>1.2</Hyperlink>
