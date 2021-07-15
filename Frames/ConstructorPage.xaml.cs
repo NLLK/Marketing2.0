@@ -45,6 +45,7 @@ namespace MegaMarketing2Reborn.Frames
 
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
+            AnswerEditorSaveButton_Click(null, null);
             //excel.AddRegistersToExcel(RegisterList);
             //TODO:получить последнюю запись
             string recordId = "1";
@@ -70,7 +71,6 @@ namespace MegaMarketing2Reborn.Frames
 
             ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Hidden;
 
-            //AnswerEditorSaveButton_Click(sender, e);
         }
         private string AddParrentQuestionButtonAndLabel(Button sender)
         {
@@ -403,20 +403,11 @@ namespace MegaMarketing2Reborn.Frames
         private int getNumberOfAnswers(RegisterQuestion parrentQuestion)
         {
             int number = 1;
-
             if (parrentQuestion.Answers != null)
-            {
                 foreach (RegisterQuestion answer in parrentQuestion.Answers)
-                {
                     number += getNumberOfAnswers(answer);
-                }
-            }
             else
-            {
                 return number;
-            }
-
-
             return number;
         }
         private int getNumberOfAnswers(List<RegisterQuestion> parrentQuestions)
@@ -457,9 +448,7 @@ namespace MegaMarketing2Reborn.Frames
             }
 
             if (index.Length == 1)
-            {
                 return question;
-            }
             else
             {
                 index = ResizeArray(index);
@@ -543,6 +532,9 @@ namespace MegaMarketing2Reborn.Frames
         }
         private void QuestionEditting(string index)
         {
+
+            AnswerEditorSaveButton_Click(null, null);
+
             QuestionIndexLabel.Content = index;
 
             RegisterEditor.Visibility = Visibility.Visible;

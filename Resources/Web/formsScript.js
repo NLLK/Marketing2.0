@@ -1,10 +1,10 @@
-window.onload = function () {
-    var questionnaire 
+
+    var questionnaire
     var mainNode = document.getElementById("test")
     questionnaire.forEach(question => {
         addQuestion(mainNode,question)
         question.Answers.forEach(ans => {
-            if (ans.Answers != null)
+            if (ans.Answers.length != 0)
             {
                 disableNode(ans)
             }
@@ -17,7 +17,7 @@ window.onload = function () {
     questionnaireHiddenDiv.innerText = JSON.stringify(questionnaire)
     mainNode.append(questionnaireHiddenDiv)
     //CefSharp.PostMessage("windowLoaded")
-}
+
 function addQuestion(mainNode, question)
 {   
     //MainNode of a question
@@ -42,7 +42,7 @@ function addQuestion(mainNode, question)
     question.Answers.forEach(answer => 
     {
         //if question have not any children
-        if (answer.Answers == null)
+        if (answer.Answers.length == 0)
         {
             //radiobutton of answer
             //TODO: textbox if needed

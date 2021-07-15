@@ -16,11 +16,20 @@ namespace MegaMarketing2Reborn.Models
         public int NextQuestionIfYes { get; set; }//если в качестве ответа был выбран этот вопрос, то перейти к другому пункту
                                          //0 - без принудительной 
         public string Value { get; set; }//ответ, в частности
-        public RegisterQuestion(){}
+        public RegisterQuestion()
+        {
+            Question = "Не указано";
+            Scale = 0;
+            QuestionNumber = "1";
+            Answers = new List<RegisterQuestion>();
+        }
         public RegisterQuestion(RegisterQuestion parrentRegisterQuestion)
         {
             string questionNumber = parrentRegisterQuestion.QuestionNumber;
             this.QuestionNumber = questionNumber + "." + (parrentRegisterQuestion.Answers.Count+1);
+            Question = "Не указано";
+            Scale = 0;
+            Answers = new List<RegisterQuestion>();
         }
         public RegisterQuestion(string question, int scale, List<RegisterQuestion> answers, string questionNumber, int nextQuestionIfYes)
         {
