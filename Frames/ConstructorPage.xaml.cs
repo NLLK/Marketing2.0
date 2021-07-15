@@ -112,10 +112,10 @@ namespace MegaMarketing2Reborn.Frames
             Label newQuestionLabel = (Label)CopyObject(lastQuestionLabel);
             newQuestionLabel.Content = "Вопрос " + questionNumber;
 
-            int questionMainRow = getNumberOfAnswers(Questionnaire.QuestionsList) + 1;
+            int questionMainRow = RegisterTreeGrid.RowDefinitions.Count - 2;
 
             Grid.SetColumn(newQuestionLabel, 0);
-            Grid.SetRow(newQuestionLabel, (questionMainRow * 2) - 2);
+            Grid.SetRow(newQuestionLabel, questionMainRow - 2);
 
             RegisterTreeGrid.Children.Add(newQuestionLabel);
 
@@ -131,7 +131,7 @@ namespace MegaMarketing2Reborn.Frames
             lastQuestionButton.Click += QuestionButtonEditting_Click;
             //добавить кнопку в Grid
 
-            int buttonRow = (questionMainRow * 2) - 1;
+            int buttonRow = questionMainRow - 1;
             int buttonColumn = 0;
 
             Grid.SetColumn(newQuestionButton, buttonColumn);
@@ -176,6 +176,8 @@ namespace MegaMarketing2Reborn.Frames
 
         private void AddAnswerButton_Click(object sender, RoutedEventArgs e)
         {
+            //TODO: начать олдаку прямо от сюда
+
             AnswerEditorSaveButton_Click(sender, e);
             ClearChoosenButtons();
             //добавить в объект новое поле //scale != 0
@@ -184,11 +186,11 @@ namespace MegaMarketing2Reborn.Frames
             string[] splitted = parentQuestionIndex.Split('.');
             RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
             RegisterQuestion newAnswer = new RegisterQuestion(question);
-            question.Answers.Add(newAnswer);
+
 
             //добавить в грид кнопку и надпись
             Button newButton = AddQuestionButtonAndLabel(newAnswer);
-            //HighlightButton(newButton);
+            question.Answers.Add(newAnswer);
 
             //подвинуть кнопки
             MoveButtonsAndLabelsDown();
@@ -266,14 +268,15 @@ namespace MegaMarketing2Reborn.Frames
             Array.Resize(ref splitted, splitted.Length - 1);
             RegisterQuestion parrentQuestion = getQuestion(splitted, Questionnaire.QuestionsList);
             int numberOfAnswers = 0;
-            for (int i = 0; i < parrentQuestion.Answers.Count - 1; i++)
+            for (int i = 0; i < parrentQuestion.Answers.Count; i++)
             {
                 //получаем количество ответов, которое уже есть в этом вопросе и ниже
                 numberOfAnswers += getNumberOfAnswers(parrentQuestion.Answers[i]);
             }
+            numberOfAnswers++;
 
             int column = getLevelOfQuestion(questionNumber);
-            int buttonRow = getPrevQuestionButtonRow(parrentQuestion) + numberOfAnswers * 2 + 2;
+            int buttonRow = getPrevQuestionButtonRow(parrentQuestion) + numberOfAnswers * 2;
 
             //добавить подпись к кнопке
             Label newQuestionLabel = (Label)CopyObject(AnswerLabelExample);
@@ -305,6 +308,8 @@ namespace MegaMarketing2Reborn.Frames
 
         private void MoveButtonsAndLabelsDown()
         {
+            //TODO: когда не хватает экрана, то начинается дичь
+
             for (int rowNumber = 0; rowNumber < TreeButtonsArray.Count; rowNumber++)
             {
                 Button[] buttons = TreeButtonsArray[rowNumber];
@@ -398,18 +403,20 @@ namespace MegaMarketing2Reborn.Frames
         private int getNumberOfAnswers(RegisterQuestion parrentQuestion)
         {
             int number = 1;
-            if (parrentQuestion.Answers == null)
-                return number;
 
-            foreach (RegisterQuestion el in parrentQuestion.Answers)
+            if (parrentQuestion.Answers != null)
             {
-                if (el.Answers != null)
+                foreach (RegisterQuestion answer in parrentQuestion.Answers)
                 {
-                    number++;
-                    number += getNumberOfAnswers(el);
+                    number += getNumberOfAnswers(answer);
                 }
-                else number++;
             }
+            else
+            {
+                return number;
+            }
+
+
             return number;
         }
         private int getNumberOfAnswers(List<RegisterQuestion> parrentQuestions)
