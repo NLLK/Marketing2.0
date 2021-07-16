@@ -547,17 +547,19 @@ namespace MegaMarketing2Reborn.Frames
 
         private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
         {
-            AnswerEditorSaveButton_Click(null, null);
-            ClearChoosenButtons();
             QuestionEditting(((Control)sender).Tag.ToString());
         }
         private void RegisterEditorAnswerHyperlink_Click(object sender, RoutedEventArgs e)
         {
-            ClearChoosenButtons();
+
             QuestionEditting(((Hyperlink)sender).Tag.ToString());
         }
         private void QuestionEditting(string index)
         {
+            AnswerEditorSaveButton_Click(null, null);
+            ClearChoosenButtons();
+            BlockDeleteButton();
+
             QuestionIndexLabel.Content = index;
             RegisterEditor.Visibility = Visibility.Visible;
             AnswerEditor.Visibility = Visibility.Visible;
@@ -610,9 +612,19 @@ namespace MegaMarketing2Reborn.Frames
                 }
                 else
                 {
-                    AnswerEditorQuestionOrAnswerLabel.Content = "Текст ответа: ";
-                    AnswerEditorTextBox.Tag = "Текст ответа: ";
-                    ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Visible;
+                    if (splitted.Length != 1)
+                    {
+                        AnswerEditorQuestionOrAnswerLabel.Content = "Текст ответа: ";
+                        AnswerEditorTextBox.Tag = "Текст ответа: ";
+                        ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        AnswerEditorQuestionOrAnswerLabel.Content = "Текст вопроса: ";
+                        AnswerEditorTextBox.Tag = "Текст вопроса: ";
+                        ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Hidden;
+                    }
+
                 }
             }
             if (!question.Question.Equals("Не указано"))
@@ -840,6 +852,24 @@ namespace MegaMarketing2Reborn.Frames
             RegisterTreeGrid.Children.Remove(label);
 
             MoveButtonsAndLabelsUp(row);
+        }
+
+        private void RegisterEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //проверять, первый ли это коренной вопрос. Если да, и нет других - то блокировать кнопку
+            BlockDeleteButton();
+        }
+        private void BlockDeleteButton()
+        {
+            if (RegisterEditor.Visibility == Visibility.Visible)
+            {
+                if (Questionnaire.QuestionsList.Count == 1)
+                {
+                    DeleteRegisterButton.IsEnabled = false;
+                }
+                else
+                    DeleteRegisterButton.IsEnabled = true;
+            }
         }
     }
 }
