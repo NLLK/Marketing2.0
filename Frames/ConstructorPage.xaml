@@ -97,7 +97,7 @@
                         </Grid.RowDefinitions>
                         <Button Name="AddSubquestionButton" Content="Добавить подрегистр" Height="30" Grid.Row="0" Grid.ColumnSpan="2" Click="AddAnswerButton_Click"/>
                         <Button Name="AddTemplateAnswerButton" Content="Добавить ответ по шаблону" Height="30" Grid.Row="1" Grid.ColumnSpan="2" Click="AddTemplateAnswerButton_Click"/>
-                        <Button Name="DeleteRegisterButton" Content="Удалить регистр" Height="30" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Red"/>
+                        <Button Name="DeleteRegisterButton" Content="Удалить регистр" Height="30" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Red" Click="DeleteRegisterButton_Click"/>
                     </Grid>
                 </DockPanel>
             </Grid>
@@ -117,9 +117,9 @@
                     <TextBox Name="AnswerEditorTextBox" Style="{StaticResource placeHolder}" Tag="Текст вопроса / Ответ"/>
                 </DockPanel>
                 <DockPanel Name="ChooseAnswerRadioButtonsDockPanel" Grid.Column="1" VerticalAlignment="Center">
-                    <RadioButton Content="Наименование" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Margin="0,0,0,5"/>
-                    <RadioButton Content="Развернутый ответ" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Margin="0,0,0,5" Grid.Column="1"/>
-                    <RadioButton Content="Интервалы" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Grid.Column="1"/>
+                    <RadioButton Content="Наименование" Name="ChooseAnswerTypeName" GroupName="ChooseAnswerTypeRadiobuttons" IsChecked="True" DockPanel.Dock="Top" Margin="0,0,0,5" />
+                    <RadioButton Content="Развернутый ответ" Name="ChooseAnswerTypeNameComplicated" GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Margin="0,0,0,5" Grid.Column="1"/>
+                    <RadioButton Content="Интервалы" Name ="ChooseAnswerTypeNameInteravls"  GroupName="ChooseAnswerTypeRadiobuttons" DockPanel.Dock="Top" Grid.Column="1"/>
                 </DockPanel>
                 <Button Name="AnswerEditorSaveButton" Content="Сохранить" DockPanel.Dock="Bottom" Grid.Row="1" Grid.Column="1" Margin="5,5,5,10" Click="AnswerEditorSaveButton_Click"/>
             </Grid>

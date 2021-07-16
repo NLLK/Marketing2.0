@@ -19,8 +19,9 @@ namespace MegaMarketing2Reborn.Models
         public RegisterQuestion()
         {
             Question = "Не указано";
-            Scale = 0;
+            Scale = -1;
             QuestionNumber = "1";
+            NextQuestionIfYes = 0;
             Answers = new List<RegisterQuestion>();
         }
         public RegisterQuestion(RegisterQuestion parrentRegisterQuestion)
@@ -28,7 +29,8 @@ namespace MegaMarketing2Reborn.Models
             string questionNumber = parrentRegisterQuestion.QuestionNumber;
             this.QuestionNumber = questionNumber + "." + (parrentRegisterQuestion.Answers.Count+1);
             Question = "Не указано";
-            Scale = 0;
+            Scale = -1;
+            NextQuestionIfYes = 0;
             Answers = new List<RegisterQuestion>();
         }
         public RegisterQuestion(string question, int scale, List<RegisterQuestion> answers, string questionNumber, int nextQuestionIfYes)

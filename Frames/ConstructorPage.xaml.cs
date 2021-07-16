@@ -45,7 +45,6 @@ namespace MegaMarketing2Reborn.Frames
 
         private void OpenWebButton_Click(object sender, RoutedEventArgs e)
         {
-            AnswerEditorSaveButton_Click(null, null);
             //excel.AddRegistersToExcel(RegisterList);
             //TODO:получить последнюю запись
             string recordId = "1";
@@ -111,6 +110,7 @@ namespace MegaMarketing2Reborn.Frames
             //добавить подпись к кнопке
             Label newQuestionLabel = (Label)CopyObject(lastQuestionLabel);
             newQuestionLabel.Content = "Вопрос " + questionNumber;
+            newQuestionLabel.Name = "QuestionLabel" + questionNumber.Replace('.', '_');
 
             int questionMainRow = RegisterTreeGrid.RowDefinitions.Count - 2;
 
@@ -139,7 +139,7 @@ namespace MegaMarketing2Reborn.Frames
 
             RegisterTreeGrid.Children.Add(newQuestionButton);
             RegisterName(newQuestionButton.Name, newQuestionButton);
-
+            RegisterName(newQuestionLabel.Name, newQuestionLabel);
             AddButtonsAndLabelsInTreeArrays(buttonRow, buttonColumn, newQuestionButton, newQuestionLabel);
 
             return (questionNumberInt - 1).ToString();
@@ -169,16 +169,9 @@ namespace MegaMarketing2Reborn.Frames
             return (UIElement)XamlReader.Load(xmlReader);
         }
 
-        private void AddSubquestionButton_Click(object sender, RoutedEventArgs e)
-        {
-            //тоже самое, что при ответе, но scale = 0
-        }
-
         private void AddAnswerButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: начать олдаку прямо от сюда
-
-            AnswerEditorSaveButton_Click(sender, e);
+            AnswerEditorSaveButton_Click(null, null);
             ClearChoosenButtons();
             //добавить в объект новое поле //scale != 0
             string parentQuestionIndex = QuestionIndexLabel.Content.ToString();
@@ -186,7 +179,6 @@ namespace MegaMarketing2Reborn.Frames
             string[] splitted = parentQuestionIndex.Split('.');
             RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
             RegisterQuestion newAnswer = new RegisterQuestion(question);
-
 
             //добавить в грид кнопку и надпись
             Button newButton = AddQuestionButtonAndLabel(newAnswer);
@@ -201,7 +193,7 @@ namespace MegaMarketing2Reborn.Frames
                 DrawTreeLines(registerQuestion);
             }
 
-            QuestionEditting(parentQuestionIndex);
+            QuestionEditting(newAnswer.QuestionNumber);
 
 
         }
@@ -280,6 +272,7 @@ namespace MegaMarketing2Reborn.Frames
 
             //добавить подпись к кнопке
             Label newQuestionLabel = (Label)CopyObject(AnswerLabelExample);
+            newQuestionLabel.Name = "QuestionLabel" + question.QuestionNumber.Replace('.', '_');
             newQuestionLabel.Content = questionNumber;
             newQuestionLabel.Visibility = Visibility.Visible;
 
@@ -299,6 +292,7 @@ namespace MegaMarketing2Reborn.Frames
 
             RegisterTreeGrid.Children.Add(newQuestionButton);
 
+            RegisterName(newQuestionLabel.Name, newQuestionLabel);
             RegisterName(newQuestionButton.Name, newQuestionButton);
 
             AddButtonsAndLabelsInTreeArrays(buttonRow, column, newQuestionButton, newQuestionLabel);
@@ -308,8 +302,6 @@ namespace MegaMarketing2Reborn.Frames
 
         private void MoveButtonsAndLabelsDown()
         {
-            //TODO: когда не хватает экрана, то начинается дичь
-
             for (int rowNumber = 0; rowNumber < TreeButtonsArray.Count; rowNumber++)
             {
                 Button[] buttons = TreeButtonsArray[rowNumber];
@@ -330,7 +322,6 @@ namespace MegaMarketing2Reborn.Frames
 
                     TreeButtonsArray.Insert(rowNumber + 1, new Button[8]);
                     TreeLabelsArray.Insert(rowNumber + 1, new Label[8]);
-                    //MoveDownTable(rowNumber);
 
                     for (int i = 0; i < indexOfLastButton; i++)
                     {
@@ -372,6 +363,23 @@ namespace MegaMarketing2Reborn.Frames
                 }
             }
         }
+
+        private void MoveButtonsAndLabelsUp(int emptyRow)
+        {
+            RegisterTreeGrid.RowDefinitions.RemoveAt(emptyRow * 2);
+            RegisterTreeGrid.RowDefinitions.RemoveAt(emptyRow * 2);
+            for (int j = 0; j < TreeButtonsArray.Count; j++)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if (TreeButtonsArray[j][i] != null)
+                        Grid.SetRow(TreeButtonsArray[j][i], (j * 2) + 1);
+                    if (TreeLabelsArray[j][i] != null)
+                        Grid.SetRow(TreeLabelsArray[j][i], j * 2);
+                }
+            }
+        }
+
 
         private void AddButtonsAndLabelsInTreeArrays(int row, int column, Button button, Label label)
         {
@@ -501,17 +509,34 @@ namespace MegaMarketing2Reborn.Frames
             string index = QuestionIndexLabel.Content.ToString();
             string[] splitted = index.Split('.');
 
-            if (!index.Equals("0"))
+            if (splitted.Length != 1)
             {
                 RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
-                question.Question = AnswerEditorTextBox.Text;
+                if (!index.Equals("0"))
+                {
+                    if (question.Question.Equals("") || question.Question.Equals("Не указано"))
+                        question.Question = AnswerEditorTextBox.Text;
+                }
+                if (ChooseAnswerTypeName.IsChecked == true)
+                {
+                    question.Scale = 0;
+                }
+                else if (ChooseAnswerTypeNameComplicated.IsChecked == true)
+                {
+                    question.Scale = 1;
+                }
+                else if (ChooseAnswerTypeNameInteravls.IsChecked == true)
+                {
+                    question.Scale = 2;
+                }
             }
+
 
         }
 
         private void RegistersScrollViewer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            AnswerEditorSaveButton_Click(sender, e);
+            AnswerEditorSaveButton_Click(null, null);
             RegisterEditor.Visibility = Visibility.Hidden;
             AnswerEditor.Visibility = Visibility.Hidden;
 
@@ -522,6 +547,7 @@ namespace MegaMarketing2Reborn.Frames
 
         private void QuestionButtonEditting_Click(object sender, RoutedEventArgs e)
         {
+            AnswerEditorSaveButton_Click(null, null);
             ClearChoosenButtons();
             QuestionEditting(((Control)sender).Tag.ToString());
         }
@@ -532,11 +558,7 @@ namespace MegaMarketing2Reborn.Frames
         }
         private void QuestionEditting(string index)
         {
-
-            AnswerEditorSaveButton_Click(null, null);
-
             QuestionIndexLabel.Content = index;
-
             RegisterEditor.Visibility = Visibility.Visible;
             AnswerEditor.Visibility = Visibility.Visible;
 
@@ -593,7 +615,34 @@ namespace MegaMarketing2Reborn.Frames
                     ChooseAnswerRadioButtonsDockPanel.Visibility = Visibility.Visible;
                 }
             }
-            AnswerEditorTextBox.Text = question.Question;
+            if (!question.Question.Equals("Не указано"))
+                AnswerEditorTextBox.Text = question.Question;
+            else
+                AnswerEditorTextBox.Text = "";
+
+            switch (question.Scale)
+            {
+                case 0:
+                    ChooseAnswerTypeName.IsChecked = true;
+                    ChooseAnswerTypeNameComplicated.IsChecked = false;
+                    ChooseAnswerTypeNameInteravls.IsChecked = false;
+                    break;
+                case 1:
+                    ChooseAnswerTypeName.IsChecked = false;
+                    ChooseAnswerTypeNameComplicated.IsChecked = true;
+                    ChooseAnswerTypeNameInteravls.IsChecked = false;
+                    break;
+                case 2:
+                    ChooseAnswerTypeName.IsChecked = false;
+                    ChooseAnswerTypeNameComplicated.IsChecked = false;
+                    ChooseAnswerTypeNameInteravls.IsChecked = true;
+                    break;
+                default:
+                    ChooseAnswerTypeName.IsChecked = true;
+                    ChooseAnswerTypeNameComplicated.IsChecked = false;
+                    ChooseAnswerTypeNameInteravls.IsChecked = false;
+                    break;
+            }
 
 
         }
@@ -622,6 +671,175 @@ namespace MegaMarketing2Reborn.Frames
                 }
 
             }
+        }
+
+        private void DeleteRegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Вы уверены, что хотите удалить этот регистр?",
+                                "Удалить регистр",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                string index = QuestionIndexLabel.Content.ToString();
+                string[] splitted = index.Split('.');
+
+                RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
+                DeleteQuestionButtons(question);
+
+                Array.Resize(ref splitted, splitted.Length - 1);
+                RegisterQuestion parrentQuestion;
+                if (splitted.Length != 0)
+                    parrentQuestion = getQuestion(splitted, Questionnaire.QuestionsList);
+                else
+                {
+                    //удаляется коренной вопрос
+                    int questionIndex = int.Parse(index) - 1;
+                    Questionnaire.QuestionsList.RemoveAt(questionIndex);
+
+                    for (int i = questionIndex; i < Questionnaire.QuestionsList.Count; i++)
+                    {
+                        RegisterQuestion register = Questionnaire.QuestionsList[i];
+                        string newNumber = (i + 1).ToString();
+
+                        RenameQuestionButtonAndLabel(register, newNumber);
+
+                        RenameParentQuestionButtonsAndLabels(register);
+                    }
+
+                    RegisterQuestion lastParentQuestion = new RegisterQuestion();
+                    lastParentQuestion.QuestionNumber = (Questionnaire.QuestionsList.Count + 2).ToString();
+
+                    RenameQuestionButtonAndLabel(lastParentQuestion, (Questionnaire.QuestionsList.Count + 1).ToString());
+
+                    return;
+                }
+
+                if (parrentQuestion.Answers.IndexOf(question) == parrentQuestion.Answers.Count - 1)
+                {
+                    parrentQuestion.Answers.Remove(question);
+                }
+                else
+                {
+
+                    int deletingQuestionIndex = parrentQuestion.Answers.IndexOf(question);
+                    parrentQuestion.Answers.Remove(question);
+                    for (int i = deletingQuestionIndex; i < parrentQuestion.Answers.Count; i++)
+                    {
+                        RegisterQuestion answer = parrentQuestion.Answers[i];
+
+                        string[] splittedNumber = answer.QuestionNumber.Split('.');
+
+                        int answerNumber = int.Parse(splittedNumber[splittedNumber.Length - 1]) - 1;
+
+                        Array.Resize(ref splittedNumber, splittedNumber.Length - 1);
+
+                        string newNumber = "";
+
+                        foreach (string str in splittedNumber)
+                        {
+                            newNumber += str + ".";
+                        }
+                        newNumber += answerNumber.ToString();
+
+                        RenameQuestionButtonAndLabel(answer, newNumber);
+
+                    }
+
+                }
+
+                RegisterTreeGrid_SizeChanged(null, null);
+                if (parrentQuestion.Answers.Count != 0)
+                    QuestionEditting(parrentQuestion.Answers[parrentQuestion.Answers.Count - 1].QuestionNumber);
+                else
+                {
+                    if (splitted.Length != 0)
+                        QuestionIndexLabel.Content = splitted[0];
+
+                    RegisterEditor.Visibility = Visibility.Hidden;
+                    AnswerEditor.Visibility = Visibility.Hidden;
+                }
+
+
+            }
+        }
+
+        public void RenameParentQuestionButtonsAndLabels(RegisterQuestion question)
+        {
+            int newIndex = 1;
+            foreach (RegisterQuestion answer in question.Answers)
+            {
+                if (answer.Answers.Count == 0)
+                {
+                    string newNumber = $"{question.QuestionNumber}.{newIndex}";
+                    RenameQuestionButtonAndLabel(answer, newNumber);
+                }
+                else 
+                {
+                    RenameQuestionButtonAndLabel(answer, $"{question.QuestionNumber}.{newIndex}");
+                    RenameParentQuestionButtonsAndLabels(answer);
+                }
+                newIndex++;
+            }
+        }
+
+        private void RenameQuestionButtonAndLabel(RegisterQuestion question, string newNumber)
+        {
+            Button button = (Button)RegisterTreeGrid.FindName("QuestionButton" + question.QuestionNumber.Replace('.', '_'));
+            Label label = (Label)RegisterTreeGrid.FindName("QuestionLabel" + question.QuestionNumber.Replace('.', '_'));
+
+            button.Tag = newNumber;
+            if (newNumber.Split('.').Length == 1)
+            {
+                label.Content = "Вопрос " + newNumber;
+            }
+            else
+                label.Content = newNumber;
+
+            UnregisterName(button.Name);
+            UnregisterName(label.Name);
+
+            button.Name = "QuestionButton" + newNumber.Replace('.', '_');
+            label.Name = "QuestionLabel" + newNumber.Replace('.', '_');
+
+            RegisterName(button.Name, button);
+            RegisterName(label.Name, label);
+
+            question.QuestionNumber = newNumber;
+        }
+
+        private void DeleteQuestionButtons(RegisterQuestion question)
+        {
+            if (question.Answers.Count == 0)
+            {
+                DeleteQuestionButton(question);
+            }
+            else
+            {
+                foreach (RegisterQuestion answer in question.Answers)
+                {
+                    DeleteQuestionButtons(answer);
+                }
+                DeleteQuestionButton(question);
+            }
+
+        }
+        private void DeleteQuestionButton(RegisterQuestion question)
+        {
+            Button button = (Button)RegisterTreeGrid.FindName("QuestionButton" + question.QuestionNumber.Replace('.', '_'));
+            Label label = (Label)RegisterTreeGrid.FindName("QuestionLabel" + question.QuestionNumber.Replace('.', '_'));
+
+            int row = Grid.GetRow(button) / 2;
+
+            TreeButtonsArray.RemoveAt(row);
+            TreeLabelsArray.RemoveAt(row);
+
+            UnregisterName(button.Name);
+            UnregisterName(label.Name);
+
+            RegisterTreeGrid.Children.Remove(button);
+            RegisterTreeGrid.Children.Remove(label);
+
+            MoveButtonsAndLabelsUp(row);
         }
     }
 }
