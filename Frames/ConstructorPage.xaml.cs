@@ -509,14 +509,11 @@ namespace MegaMarketing2Reborn.Frames
             string index = QuestionIndexLabel.Content.ToString();
             string[] splitted = index.Split('.');
 
-            if (splitted.Length != 1)
+            if (!index.Equals("0"))
             {
                 RegisterQuestion question = getQuestion(splitted, Questionnaire.QuestionsList);
-                if (!index.Equals("0"))
-                {
-                    if (question.Question.Equals("") || question.Question.Equals("Не указано"))
-                        question.Question = AnswerEditorTextBox.Text;
-                }
+                if (question.Question.Equals("") || question.Question.Equals("Не указано"))
+                    question.Question = AnswerEditorTextBox.Text;
                 if (ChooseAnswerTypeName.IsChecked == true)
                 {
                     question.Scale = 0;
@@ -530,8 +527,6 @@ namespace MegaMarketing2Reborn.Frames
                     question.Scale = 2;
                 }
             }
-
-
         }
 
         private void RegistersScrollViewer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -785,7 +780,7 @@ namespace MegaMarketing2Reborn.Frames
                     string newNumber = $"{question.QuestionNumber}.{newIndex}";
                     RenameQuestionButtonAndLabel(answer, newNumber);
                 }
-                else 
+                else
                 {
                     RenameQuestionButtonAndLabel(answer, $"{question.QuestionNumber}.{newIndex}");
                     RenameParentQuestionButtonsAndLabels(answer);
